@@ -27,7 +27,7 @@ extension ARView: ObservableObject {}
 struct ContentView : View {
     
     @EnvironmentObject private var arView: ARView
-    @State private var selectedCamera: ModelEntity?
+    @State private var selectedCamera: Entity?
     
     var body: some View {
         HStack {
@@ -55,11 +55,10 @@ struct ContentView : View {
                     }
                 }
                 .onTap { point in
-                    let result = arView.raycast(from: point, allowing: .estimatedPlane, alignment: .any)
-                    if let hit = result.first {
-                        let anchor = AnchorEntity(world: hit.worldTransform)
-                        anchor.addChild(createSphere(radius: 0.2))
-                        arView.scene.addAnchor(anchor)
+                    debugPrint(point)
+                    let res = arView.hitTest(point)
+                    if let first = res.first {
+                        selectedCamera = first.entity
                     }
                 }
                 .popover(item: $selectedCamera) { camera in
@@ -75,14 +74,16 @@ struct ContentView : View {
         let material = SimpleMaterial(color: .red, roughness: 0.5, isMetallic: true)
         
         let sphereEntity = ModelEntity(mesh: sphere, materials: [material])
+        sphereEntity.generateCollisionShapes(recursive: true)
         return sphereEntity
     }
     
     func createBox(size: Float) -> ModelEntity {
         let box = MeshResource.generateBox(size: size)
         let material = SimpleMaterial(color: .blue, roughness: 0.5, isMetallic: true)
-        let sphereEntity = ModelEntity(mesh: box, materials: [material])
-        return sphereEntity
+        let boxEntity = ModelEntity(mesh: box, materials: [material])
+        boxEntity.generateCollisionShapes(recursive: true)
+        return boxEntity
     }
     
     func placeObject(_ object: ModelEntity, at position: SIMD3<Float>) {
