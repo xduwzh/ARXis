@@ -27,9 +27,11 @@ extension ARView: ObservableObject {}
 struct ContentView : View {
     
     @EnvironmentObject private var arView: ARView
+    @State private var selectedCamera: ModelEntity?
     
     var body: some View {
         HStack {
+            
             ARViewContainer()
                 .edgesIgnoringSafeArea(.all)
                 .onDrop(of: [.utf8PlainText], isTargeted: nil) { providers, location in
@@ -42,6 +44,7 @@ struct ContentView : View {
                             }
                             if cameraID == "2" {
                                 object = createBox(size: 0.2)
+                                selectedCamera = object
                             }
                             if let object = object {
                                 let anchor = AnchorEntity(world: hit.worldTransform)
@@ -50,6 +53,17 @@ struct ContentView : View {
                             }
                         }
                     }
+                }
+                .onTap { point in
+                    let result = arView.raycast(from: point, allowing: .estimatedPlane, alignment: .any)
+                    if let hit = result.first {
+                        let anchor = AnchorEntity(world: hit.worldTransform)
+                        anchor.addChild(createSphere(radius: 0.2))
+                        arView.scene.addAnchor(anchor)
+                    }
+                }
+                .popover(item: $selectedCamera) { camera in
+                    Text("halo")
                 }
             CameraPicker()
         }
@@ -96,11 +110,25 @@ struct ARViewContainer: UIViewRepresentable {
         config.planeDetection = [.vertical, .horizontal]
         arView.session.run(config)
         
-        return arView
+        arView.session.delegate = context.coordinator
         
+        return arView
     }
     
     func updateUIView(_ uiView: ARView, context: Context) {}
+    
+    class Coordinator: NSObject, ARSessionDelegate {
+        dynamic func touchesBegan(
+            _ touches: Set<UITouch>,
+            with event: UIEvent
+        ) {
+            debugPrint("DSADASD")
+        }
+    }
+    func makeCoordinator() -> Coordinator {
+        return Coordinator()
+    }
+    
 }
 
 #if DEBUG

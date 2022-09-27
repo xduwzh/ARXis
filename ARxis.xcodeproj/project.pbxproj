@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A1A4C8A28E310F4003C9B43 /* TappableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1A4C8928E310F4003C9B43 /* TappableView.swift */; };
 		3A445EB928D9FB75004733F5 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A445EB828D9FB75004733F5 /* extensions.swift */; };
 		3A445EBB28D9FF5F004733F5 /* SceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A445EBA28D9FF5F004733F5 /* SceneManager.swift */; };
 		3A610E1928D9F68E00E5B77B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A610E1828D9F68E00E5B77B /* AppDelegate.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A1A4C8928E310F4003C9B43 /* TappableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TappableView.swift; sourceTree = "<group>"; };
 		3A445EB828D9FB75004733F5 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		3A445EBA28D9FF5F004733F5 /* SceneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneManager.swift; sourceTree = "<group>"; };
 		3A610E1528D9F68E00E5B77B /* ARXis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARXis.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +69,7 @@
 				3A610E2828D9F6B800E5B77B /* CameraPicker.swift */,
 				3A445EB828D9FB75004733F5 /* extensions.swift */,
 				3A445EBA28D9FF5F004733F5 /* SceneManager.swift */,
+				3A1A4C8928E310F4003C9B43 /* TappableView.swift */,
 			);
 			path = ARxis;
 			sourceTree = "<group>";
@@ -154,6 +157,7 @@
 				3A610E1B28D9F68E00E5B77B /* ContentView.swift in Sources */,
 				3A610E1928D9F68E00E5B77B /* AppDelegate.swift in Sources */,
 				3A445EBB28D9FF5F004733F5 /* SceneManager.swift in Sources */,
+				3A1A4C8A28E310F4003C9B43 /* TappableView.swift in Sources */,
 				3A610E1D28D9F68E00E5B77B /* Experience.rcproject in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
