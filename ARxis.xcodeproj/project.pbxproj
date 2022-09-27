@@ -16,6 +16,10 @@
 		3A610E1F28D9F68F00E5B77B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A610E1E28D9F68F00E5B77B /* Assets.xcassets */; };
 		3A610E2228D9F68F00E5B77B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A610E2128D9F68F00E5B77B /* Preview Assets.xcassets */; };
 		3A610E2928D9F6B800E5B77B /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A610E2828D9F6B800E5B77B /* CameraPicker.swift */; };
+		3A84841428E3276900736A4C /* ObjectManipulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841328E3276900736A4C /* ObjectManipulator.swift */; };
+		3A84841628E32D2C00736A4C /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841528E32D2C00736A4C /* Camera.swift */; };
+		3A84841828E3471200736A4C /* MeshResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841728E3471200736A4C /* MeshResource.swift */; };
+		3A84841A28E34E4900736A4C /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841928E34E4900736A4C /* shaders.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +33,10 @@
 		3A610E1E28D9F68F00E5B77B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3A610E2128D9F68F00E5B77B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3A610E2828D9F6B800E5B77B /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
+		3A84841328E3276900736A4C /* ObjectManipulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManipulator.swift; sourceTree = "<group>"; };
+		3A84841528E32D2C00736A4C /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		3A84841728E3471200736A4C /* MeshResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshResource.swift; sourceTree = "<group>"; };
+		3A84841928E34E4900736A4C /* shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shaders.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +69,7 @@
 		3A610E1728D9F68E00E5B77B /* ARxis */ = {
 			isa = PBXGroup;
 			children = (
+				3A84841528E32D2C00736A4C /* Camera.swift */,
 				3A610E1828D9F68E00E5B77B /* AppDelegate.swift */,
 				3A610E1A28D9F68E00E5B77B /* ContentView.swift */,
 				3A610E1C28D9F68E00E5B77B /* Experience.rcproject */,
@@ -70,6 +79,9 @@
 				3A445EB828D9FB75004733F5 /* extensions.swift */,
 				3A445EBA28D9FF5F004733F5 /* SceneManager.swift */,
 				3A1A4C8928E310F4003C9B43 /* TappableView.swift */,
+				3A84841328E3276900736A4C /* ObjectManipulator.swift */,
+				3A84841728E3471200736A4C /* MeshResource.swift */,
+				3A84841928E34E4900736A4C /* shaders.metal */,
 			);
 			path = ARxis;
 			sourceTree = "<group>";
@@ -154,11 +166,15 @@
 			files = (
 				3A445EB928D9FB75004733F5 /* extensions.swift in Sources */,
 				3A610E2928D9F6B800E5B77B /* CameraPicker.swift in Sources */,
+				3A84841828E3471200736A4C /* MeshResource.swift in Sources */,
 				3A610E1B28D9F68E00E5B77B /* ContentView.swift in Sources */,
 				3A610E1928D9F68E00E5B77B /* AppDelegate.swift in Sources */,
 				3A445EBB28D9FF5F004733F5 /* SceneManager.swift in Sources */,
+				3A84841428E3276900736A4C /* ObjectManipulator.swift in Sources */,
 				3A1A4C8A28E310F4003C9B43 /* TappableView.swift in Sources */,
 				3A610E1D28D9F68E00E5B77B /* Experience.rcproject in Sources */,
+				3A84841628E32D2C00736A4C /* Camera.swift in Sources */,
+				3A84841A28E34E4900736A4C /* shaders.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,7 +303,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ARxis/Preview Content\"";
-				DEVELOPMENT_TEAM = W94K4L9DHP;
+				DEVELOPMENT_TEAM = R96ZCT9AY2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
@@ -318,7 +334,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ARxis/Preview Content\"";
-				DEVELOPMENT_TEAM = W94K4L9DHP;
+				DEVELOPMENT_TEAM = R96ZCT9AY2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
