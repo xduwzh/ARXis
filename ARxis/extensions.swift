@@ -13,7 +13,7 @@ extension Array where Element == NSItemProvider {
         firstOnly: Bool = false,
         using load: @escaping (T) -> Void
     ) -> Bool where T: NSItemProviderReading {
-        if let provider = self.first(where: { $0.canLoadObject(ofClass: theType) }) {
+        if let provider = first(where: { $0.canLoadObject(ofClass: theType) }) {
             provider.loadObject(ofClass: theType) { object, _ in
                 if let value = object as? T {
                     DispatchQueue.main.async {
@@ -25,12 +25,13 @@ extension Array where Element == NSItemProvider {
         }
         return false
     }
+
     func loadObjects<T>(
         ofType theType: T.Type,
         firstOnly: Bool = false,
         using load: @escaping (T) -> Void
     ) -> Bool where T: _ObjectiveCBridgeable, T._ObjectiveCType: NSItemProviderReading {
-        if let provider = self.first(where: { $0.canLoadObject(ofClass: theType) }) {
+        if let provider = first(where: { $0.canLoadObject(ofClass: theType) }) {
             _ = provider.loadObject(ofClass: theType) { object, _ in
                 if let value = object {
                     DispatchQueue.main.async {
@@ -42,16 +43,18 @@ extension Array where Element == NSItemProvider {
         }
         return false
     }
+
     func loadFirstObject<T>(
         ofType theType: T.Type,
         using load: @escaping (T) -> Void
     ) -> Bool where T: NSItemProviderReading {
-        self.loadObjects(ofType: theType, firstOnly: true, using: load)
+        loadObjects(ofType: theType, firstOnly: true, using: load)
     }
+
     func loadFirstObject<T>(
         ofType theType: T.Type,
         using load: @escaping (T) -> Void
     ) -> Bool where T: _ObjectiveCBridgeable, T._ObjectiveCType: NSItemProviderReading {
-        self.loadObjects(ofType: theType, firstOnly: true, using: load)
+        loadObjects(ofType: theType, firstOnly: true, using: load)
     }
 }

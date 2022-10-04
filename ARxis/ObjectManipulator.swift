@@ -1,35 +1,86 @@
+//  ContentView.swift
+//  ObjectManipulator
 //
-//  ObjectManipulator.swift
-//  ARxis
-//
-//  Created by Aleksy Krolczyk on 27/09/2022.
+//  Created by Adam Korytowski on 04/10/2022.
 //
 
 import SwiftUI
-import RealityKit
 
-struct ObjectManipulator: View {
+struct ArrowView: View {
+    static let width: CGFloat = 20
+    static let spacing: CGFloat = 7
     
-//    @EnvironmentObject private var arView: ARView
+    let columns = [
+        GridItem(.fixed(ArrowView.width)),
+        GridItem(.fixed(ArrowView.width)),
+        GridItem(.fixed(ArrowView.width)),
+    ]
     
-    let camera: Camera?
+    let icons = [
+        nil,          "arrow.up",    nil,
+        "arrow.left", nil,          "arrow.right",
+        nil,          "arrow.down", nil,
+    ]
+    
+    var onArrowUp: (() -> Void)?
+    var onArrowLeft: (() -> Void)?
+    var onArrowRight: (() -> Void)?
+    var onArrowDown: (() -> Void)?
+    
     var body: some View {
-        VStack {
-            Button("Delete") {
-                camera!.entity.removeFromParent()
-            }
-            Button("Show/hide FOV cone") {
-                camera?.enableFOVCone()
+        LazyVGrid(columns: columns, spacing: ArrowView.spacing) {
+            ForEach(0..<9) { index in
+                if let icon = icons[index] {
+                    Image(systemName: icon)
+                        .onTapGesture {
+                            switch(icon) {
+                                case "arrow.up":
+                                    self.onArrowUp?()
+                                case "arrow.left":
+                                    self.onArrowLeft?()
+                                case "arrow.right":
+                                    self.onArrowRight?()
+                                case "arrow.down":
+                                    self.onArrowDown?()
+                                default:
+                                    break
+                            }
+                        }
+                } else {
+                    Image(systemName: "square").opacity(0)
+                }
             }
         }
-        
-        
     }
+    
 }
 
-
-struct ObjectManipulator_Previews: PreviewProvider {
-    static var previews: some View {
-        ObjectManipulator(camera: nil)
+struct ObjectManipulator: View {
+    var onArrowUp: (() -> Void)
+    var onArrowLeft: (() -> Void)
+    var onArrowRight: (() -> Void)
+    var onArrowDown: (() -> Void)
+    var onTrashClick: (() -> Void)
+    
+    var body: some View {
+        HStack {
+            ArrowView(
+                onArrowUp: onArrowUp,
+                onArrowLeft: onArrowLeft,
+                onArrowRight: onArrowRight,
+                onArrowDown: onArrowDown
+            )
+            .font(.system(size: 20))
+            .padding()
+            Spacer()
+            VStack() {
+                Image(systemName: "cone.fill")
+                Spacer()
+                Image(systemName: "trash.fill")
+                    .onTapGesture {
+                        onTrashClick()
+                    }
+            }.padding()
+        }
     }
 }

@@ -16,18 +16,18 @@ extension MeshResource {
         var indices: [UInt32] = []
         var materialIndices: [UInt32] = []
         let uiSides = UInt32(sides) * (smoothNormals ? 1 : 2)
-        for side in 0..<UInt32(sides) {
+        for side in 0 ..< UInt32(sides) {
             let uiSideSmooth = side * (smoothNormals ? 1 : 2)
             let bottomLeft = uiSideSmooth
             let bottomRight = uiSideSmooth + 1
             let topVertex = side + uiSides + 1
-            
+
             // First triangle of side
             indices.append(contentsOf: [bottomLeft, topVertex, bottomRight])
-            
+
             // Add bottom cap triangle
             indices.append(contentsOf: [0, side + 1, side + 2].map { $0 + lowerCenterIndex })
-            
+
             if splitFaces {
                 materialIndices.append(0)
                 materialIndices.append(1)
@@ -35,7 +35,7 @@ extension MeshResource {
         }
         return (indices, materialIndices)
     }
-    
+
     fileprivate struct ConeVertices {
         var lowerEdge: [CompleteVertex]
         var upperEdge: [CompleteVertex]
@@ -44,19 +44,19 @@ extension MeshResource {
         var indices: [UInt32]?
         var materialIndices: [UInt32]?
         var smoothNormals: Bool
-        
+
         mutating func calculateDetails(
             height: Float, sides: Int, splitFaces: Bool
         ) -> Bool {
             let halfHeight = height / 2
             var vertices = lowerEdge
             vertices.append(contentsOf: upperEdge)
-            
+
             let lowerCenterIndex = UInt32(vertices.count)
             vertices.append(CompleteVertex(
                 position: [0, -halfHeight, 0], normal: [0, -1, 0], uv: [0.5, 0.5]
             ))
-            
+
             vertices.append(contentsOf: lowerCap)
             self.combinedVerts = vertices
             (self.indices, self.materialIndices) = coneIndices(
@@ -65,7 +65,7 @@ extension MeshResource {
             return true
         }
     }
-    
+
     fileprivate static func coneVertices(
         _ sides: Int, _ radius: Float, _ height: Float, _ smoothNormals: Bool = false
     ) -> ConeVertices {
@@ -78,18 +78,18 @@ extension MeshResource {
         var upperEdgeVertices = [CompleteVertex]()
         // bottom edge vertices
         var lowerCapVertices = [CompleteVertex]()
-        
+
         let hyp = sqrtf(radius * radius + height * height)
         let coneNormX = radius / hyp
         let coneNormY = height / hyp
         // create vertices for all sides of the cylinder
-        for side in 0...sides {
+        for side in 0 ... sides {
             let cosTheta = cos(theta)
             let sinTheta = sin(theta)
-            
+
             let lowerPosition: SIMD3<Float> = [radius * cosTheta, -height / 2, radius * sinTheta]
             let coneBottomNormal: SIMD3<Float> = [coneNormY * cosTheta, coneNormX, coneNormY * sinTheta]
-            
+
             if side != 0, !smoothNormals {
                 vertices.append(CompleteVertex(
                     position: lowerPosition,
@@ -97,43 +97,43 @@ extension MeshResource {
                     uv: [1 - uStep * Float(side), 0]
                 ))
             }
-            
+
             let bottomVertex = CompleteVertex(
                 position: lowerPosition,
                 normal: smoothNormals ? coneBottomNormal : [
-                    coneNormY * cos(theta + thetaInc / 2), coneNormX, coneNormY * sin(theta + thetaInc / 2)
+                    coneNormY * cos(theta + thetaInc / 2), coneNormX, coneNormY * sin(theta + thetaInc / 2),
                 ],
                 uv: [1 - uStep * Float(side), 0]
             )
-            
+
             // add vertex for bottom side of cone
             vertices.append(bottomVertex)
-            
+
             // add vertex for bottom side facing down
             lowerCapVertices.append(CompleteVertex(
                 position: bottomVertex.position,
                 normal: [0, -1, 0], uv: [cosTheta + 1, sinTheta + 1] / 2)
             )
-            
+
             let coneTopNormal: SIMD3<Float> = [
                 coneNormY * cos(theta + thetaInc / 2), coneNormX,
-                coneNormY * sin(theta + thetaInc / 2)
+                coneNormY * sin(theta + thetaInc / 2),
             ]
-            
+
             // add vertex for top of the cone
             let topVertex = CompleteVertex(
                 position: [0, height / 2, 0],
                 normal: coneTopNormal, uv: [1 - uStep * (Float(side) + 0.5), 1]
             )
             upperEdgeVertices.append(topVertex)
-            
+
             theta += thetaInc
         }
         return .init(
             lowerEdge: vertices, upperEdge: upperEdgeVertices, lowerCap: lowerCapVertices, smoothNormals: smoothNormals
         )
     }
-    
+
     /// Creates a new cone mesh with the specified values 🍦
     /// - Parameters:
     ///   - radius: Radius of the code base
@@ -163,8 +163,6 @@ extension MeshResource {
         return try MeshResource.generate(from: [meshDescr])
     }
 }
-
-
 
 internal struct CompleteVertex {
     var position: SIMD3<Float>
@@ -200,6 +198,7 @@ internal extension SIMD3 where Scalar == Float {
     var normalised: SIMD3<Float> {
         return self / self.length
     }
+
     var length: Float {
         return sqrt(length_squared(self))
     }
