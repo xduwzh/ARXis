@@ -8,8 +8,14 @@
 import Foundation
 import RealityKit
 
-protocol isCone: Component {}
+struct IsCone: Component, Codable {}
 
-class ConeEntity: Entity, isCone {
+class ConeEntity: Entity, HasModel {
+    required init() {}
     
+    init(mesh: MeshResource, materials: [Material]) {
+        super.init()
+        self.model = ModelComponent(mesh: mesh, materials: materials)
+        self.components[IsCone.self] = IsCone()
+    }
 }

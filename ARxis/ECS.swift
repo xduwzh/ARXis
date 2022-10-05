@@ -10,15 +10,14 @@ import RealityKit
 
 class ARXisSystem: System {
     required init(scene: Scene) {}
-    
-//    private static let query = EntityQuery(where: .has(isCone))
 
-    
-    
+    private static let query = EntityQuery(where: .has(IsCone.self))
+
     func update(context: SceneUpdateContext) {
-//        Component.
-//        context.scene.
+        context.scene.performQuery(Self.query).forEach { x in
+            debugPrint(x)
+        }
     }
-    
-    
+
+
 }

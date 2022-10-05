@@ -15,6 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Create the SwiftUI view that provides the window contents.
+        
+        IsCone.registerComponent()
+        ARXisSystem.registerSystem()
+        
         let arView = ARView(frame: .zero)
         let contentView = MainView(sceneManager: SceneManager(arView: arView))
             .environmentObject(arView)

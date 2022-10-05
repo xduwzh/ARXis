@@ -45,7 +45,7 @@ class SceneManager: ObservableObject {
         cameras.append(Camera(entity: anchor, cameraModel: camera.name))
     }
     
-    func createCone(radius: Float, height: Float) -> ModelEntity {
+    func createCone(radius: Float, height: Float) -> Entity {
         let cone = try! MeshResource.generateCone(radius: radius, height: height, sides: 64, smoothNormals: true)
         let material = SimpleMaterial(color: .random(alpha: 0.7), isMetallic: false)
         
@@ -57,9 +57,7 @@ class SceneManager: ObservableObject {
         custom.faceCulling = .none
         custom.baseColor = .init(tint: material.color.tint)
         
-        let coneEntity = ModelEntity(mesh: cone, materials: [custom])
-        
-        
+        let coneEntity = ConeEntity(mesh: cone, materials: [custom])
         
         return coneEntity
     }
