@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Create the SwiftUI view that provides the window contents.
         let arView = ARView(frame: .zero)
-        let contentView = ContentView(sceneManager: SceneManager(arView: arView))
+        let contentView = MainView(sceneManager: SceneManager(arView: arView))
             .environmentObject(arView)
 
         // Use a UIHostingController as window root view controller.

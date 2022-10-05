@@ -39,9 +39,7 @@ struct Camera: Identifiable {
     }
     
     func rotate(angle: Float, axis: Axis) {
-        movablePart.transform.matrix.columns.3.y = 0
         movablePart.transform.rotation *= simd_quatf(angle: angle, axis: axis.simd)
-        movablePart.transform.matrix.columns.3.y = 1
     }
     
     

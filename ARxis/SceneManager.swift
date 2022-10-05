@@ -30,11 +30,13 @@ class SceneManager: ObservableObject {
         let anchor = AnchorEntity(world: transform)
         let cone = createCone(radius: 1, height: 2)
         let object = camera.getNew()
+        let coneAnchor = Entity()
         cone.transform.matrix.columns.3.y = 1
         cone.orientation = simd_quatf(angle: .pi, axis: [0, 0, 1])
         
+        coneAnchor.addChild(cone)
         anchor.addChild(object)
-        object.addChild(cone)
+        object.addChild(coneAnchor)
         
         arView.installGestures(.translation, for: object)
         
@@ -56,6 +58,8 @@ class SceneManager: ObservableObject {
         custom.baseColor = .init(tint: material.color.tint)
         
         let coneEntity = ModelEntity(mesh: cone, materials: [custom])
+        
+        
         
         return coneEntity
     }

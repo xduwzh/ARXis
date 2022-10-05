@@ -11,7 +11,7 @@ import SwiftUI
 
 extension ARView: ObservableObject {}
 
-struct ContentView: View {
+struct MainView: View {
     @ObservedObject var sceneManager: SceneManager
     @EnvironmentObject private var arView: ARView
     @State private var selectedCamera: Camera?
@@ -50,10 +50,10 @@ struct ContentView: View {
                             ),
                             arrowEdge: .trailing) { camera in
                                 ObjectManipulator(
-                                    onArrowUp: { camera.rotate(angle: .pi/13, axis: .vertical) },
-                                    onArrowLeft: { camera.rotate(angle: -.pi/13, axis: .horizontal) },
-                                    onArrowRight: { camera.rotate(angle: .pi/13, axis: .horizontal) },
-                                    onArrowDown: { camera.rotate(angle: -.pi/13, axis: .vertical) },
+                                    onArrowUp: { camera.rotate(angle: -.pi/13, axis: .vertical) },
+                                    onArrowLeft: { camera.rotate(angle: .pi/13, axis: .horizontal) },
+                                    onArrowRight: { camera.rotate(angle: -.pi/13, axis: .horizontal) },
+                                    onArrowDown: { camera.rotate(angle: .pi/13, axis: .vertical) },
                                     onTrashClick: {
                                         sceneManager.removeCamera(camera)
                                         selectedCamera = nil

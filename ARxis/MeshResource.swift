@@ -130,12 +130,6 @@ extension MeshResource {
             theta += thetaInc
         }
         
-//        return .init(
-//            lowerEdge: vertices.move(y: -height / 2),
-//            upperEdge: upperEdgeVertices.move(y: -height / 2),
-//            lowerCap: lowerCapVertices.move(y: -height / 2),
-//            smoothNormals: smoothNormals
-//        )
         return .init(
             lowerEdge: vertices,
             upperEdge: upperEdgeVertices,
