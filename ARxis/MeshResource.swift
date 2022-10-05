@@ -129,11 +129,21 @@ extension MeshResource {
 
             theta += thetaInc
         }
+        
+//        return .init(
+//            lowerEdge: vertices.move(y: -height / 2),
+//            upperEdge: upperEdgeVertices.move(y: -height / 2),
+//            lowerCap: lowerCapVertices.move(y: -height / 2),
+//            smoothNormals: smoothNormals
+//        )
         return .init(
-            lowerEdge: vertices, upperEdge: upperEdgeVertices, lowerCap: lowerCapVertices, smoothNormals: smoothNormals
+            lowerEdge: vertices,
+            upperEdge: upperEdgeVertices,
+            lowerCap: lowerCapVertices,
+            smoothNormals: smoothNormals
         )
     }
-
+    
     /// Creates a new cone mesh with the specified values 🍦
     /// - Parameters:
     ///   - radius: Radius of the code base
@@ -192,6 +202,14 @@ internal extension Array where Element == CompleteVertex {
         }
         return meshDescriptor
     }
+    
+    func move(x: Float = 0, y: Float = 0, z: Float = 0) -> [CompleteVertex] {
+        return self.map { vertex in
+            CompleteVertex(position: vertex.position + SIMD3(x: x, y: y, z: z), normal: vertex.normal, uv: vertex.uv)
+        }
+    }
+
+    
 }
 
 internal extension SIMD3 where Scalar == Float {

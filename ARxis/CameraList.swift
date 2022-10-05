@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension Array where Element == Camera {
+fileprivate extension Array where Element == Camera {
     func toCameraModels() -> [CameraModel] {
         self.compactMap { camera in
             CAMERAS.first { cameraModel in

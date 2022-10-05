@@ -17,7 +17,6 @@ struct Camera: Identifiable {
     let entity: AnchorEntity
     let cameraModel: String
     var movablePart: Entity {
-        debugPrint(entity.children[0].children.endIndex)
         return entity.children[0].children[entity.children[0].children.endIndex - 1]
     }
 

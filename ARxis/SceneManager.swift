@@ -9,6 +9,15 @@ import Foundation
 import ARKit
 import RealityKit
 
+fileprivate extension UIColor {
+    static func random(alpha: CGFloat) -> UIColor {
+//        return UIColor(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1), alpha: alpha)
+        let colors: [UIColor] = [.red, .magenta, .green, .blue, .cyan, .purple, .yellow]
+        return colors.randomElement()!.withAlphaComponent(alpha)
+    }
+    
+}
+
 class SceneManager: ObservableObject {
     let arView: ARView
     @Published var cameras: [Camera] = []
@@ -35,11 +44,14 @@ class SceneManager: ObservableObject {
     }
     
     func createCone(radius: Float, height: Float) -> ModelEntity {
-        let cone = try! MeshResource.generateCone(radius: radius, height: height, sides: 32, smoothNormals: true)
-        var material = SimpleMaterial(color: .magenta, roughness: 0.5, isMetallic: true)
-        material.color.tint = material.color.tint.withAlphaComponent(0.7)
+        let cone = try! MeshResource.generateCone(radius: radius, height: height, sides: 64, smoothNormals: true)
+        let material = SimpleMaterial(color: .random(alpha: 0.7), isMetallic: false)
         
-        var custom = try! CustomMaterial(from: material, surfaceShader: .init(named: "emptyGeometryModifier", in: library))
+        var custom = try! CustomMaterial(
+            from: material,
+            geometryModifier: .init(named: "emptyGeometryModifier", in: library)
+        )
+        
         custom.faceCulling = .none
         custom.baseColor = .init(tint: material.color.tint)
         
