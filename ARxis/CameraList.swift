@@ -7,34 +7,36 @@
 
 import SwiftUI
 
-fileprivate extension Array where Element == Camera {
-    func toCameraModels() -> [CameraModel] {
-        self.compactMap { camera in
-            CAMERAS.first { cameraModel in
-                cameraModel.name == camera.cameraModel
-            }
-        }
+extension Camera {
+    func toCameraModel() -> CameraModel {
+        CAMERAS.first { cameraModel in
+            cameraModel.name == self.cameraModel
+        }!
     }
 }
 
 struct CameraList: View {
     let cameras: [Camera]
+    var onCameraTap: (Camera) -> Void
+        
     var body: some View {
-        ScrollView(.horizontal){
+        ScrollView(.horizontal) {
             HStack {
-                ForEach(cameras.toCameraModels()) { camera in
-                    Image(uiImage: camera.image)
-                        .resizable()
-                        .frame(width: 100, height: 100)
-                        .padding()
+                ForEach(cameras) { camera in
+                    VStack{
+                        Image(uiImage: camera.toCameraModel().image)
+                            .resizable()
+                            .frame(width: 100, height: 100)
+                            .padding()
+                        Image(systemName: camera.seesIpad ? "checkmark.square" : "x.square")
+                            .foregroundColor(camera.seesIpad ? .green : .red)
+                    }
+                    .padding()
+                    .onTapGesture {
+                        onCameraTap(camera)
+                    }
                 }
             }
         }
-    }
-}
-
-struct CameraList_Previews: PreviewProvider {
-    static var previews: some View {
-        CameraList(cameras: [])
     }
 }

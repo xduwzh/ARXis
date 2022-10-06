@@ -19,8 +19,16 @@ struct Camera: Identifiable {
     var movablePart: Entity {
         return entity.children[0].children[entity.children[0].children.endIndex - 1]
     }
+    var coneActive: Bool {
+        movablePart.isActive
+    }
+    var cameraEntity: Entity {
+        entity.children[0]
+    }
+    var seesIpad = false
 
-    func enableFOVCone() {
+    func toggleFOVCone() {
+        movablePart.isEnabled = !movablePart.isEnabled
     }
     
     

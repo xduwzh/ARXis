@@ -61,6 +61,8 @@ struct ObjectManipulator: View {
     var onArrowRight: (() -> Void)
     var onArrowDown: (() -> Void)
     var onTrashClick: (() -> Void)
+    var onConeClick: (() -> Void)
+    @State var coneActive: Bool
     
     var body: some View {
         HStack {
@@ -74,7 +76,11 @@ struct ObjectManipulator: View {
             .padding()
             Spacer()
             VStack() {
-                Image(systemName: "cone.fill")
+                Image(systemName: coneActive ? "cone.fill" : "cone")
+                    .onTapGesture {
+                        coneActive = !coneActive
+                        onConeClick()
+                    }
                 Spacer()
                 Image(systemName: "trash.fill")
                     .onTapGesture {

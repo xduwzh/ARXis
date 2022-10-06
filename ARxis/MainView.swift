@@ -17,7 +17,7 @@ struct MainView: View {
     @State private var selectedCamera: Camera?
 
     var cameraPos: CGPoint {
-        if let entity = selectedCamera?.entity {
+        if let entity = selectedCamera?.cameraEntity {
             return arView.project(entity.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
         }
         return CGPoint(x: -1, y: -1)
@@ -57,12 +57,16 @@ struct MainView: View {
                                     onTrashClick: {
                                         sceneManager.removeCamera(camera)
                                         selectedCamera = nil
-                                    }
+                                    },
+                                    onConeClick: { sceneManager.toggleCone(for: camera) },
+                                    coneActive: camera.coneActive
                                 )
                                 
                             }
                 }
-                CameraList(cameras: sceneManager.cameras).padding()
+                CameraList(cameras: sceneManager.cameras) { camera in
+                    selectedCamera = camera
+                }.padding()
             }
             CameraPicker()
         }

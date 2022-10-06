@@ -46,7 +46,7 @@ class SceneManager: ObservableObject {
     }
     
     func createCone(radius: Float, height: Float) -> Entity {
-        let cone = try! MeshResource.generateCone(radius: radius, height: height, sides: 64, smoothNormals: true)
+        
         let material = SimpleMaterial(color: .random(alpha: 0.7), isMetallic: false)
         
         var custom = try! CustomMaterial(
@@ -57,7 +57,8 @@ class SceneManager: ObservableObject {
         custom.faceCulling = .none
         custom.baseColor = .init(tint: material.color.tint)
         
-        let coneEntity = ConeEntity(mesh: cone, materials: [custom])
+        let coneEntity = ConeEntity(radius: radius, height: height, materials: [custom], sceneManager: self)
+        
         
         return coneEntity
     }
@@ -76,7 +77,53 @@ class SceneManager: ObservableObject {
         cameras.removeAll { $0.id == camera.id }
     }
     
+    func setSeesIpad(for entity: ConeEntity) {
+        guard let camera = getCamera(for: entity.anchor!.id) else { return }
+        
+        let anchorPos = camera.cameraEntity.position(relativeTo: nil)
+        let ipadPos = arView.cameraTransform.matrix.columns.3
+        let conePos = entity.position(relativeTo: nil)
+        
+        let index = cameras.index(of: camera)
+        
+        let result = arView.scene.raycast(from: SIMD3(ipadPos.x, ipadPos.y, ipadPos.z), to: anchorPos, query: .nearest)
+        if let hit = result.first, let anch = hit.entity.anchor {
+            debugPrint(Date(), anch.id)
+            if anch.id != camera.entity.id {
+                cameras[index].seesIpad = false
+                return
+            }
+        }
+        else {
+            cameras[index].seesIpad = false
+            return
+        }
+        
+        let anchorToCamera = normalize(SIMD3(ipadPos.x - anchorPos.x, ipadPos.y - anchorPos.y, ipadPos.z - anchorPos.z))
+        let anchorToCone = normalize(SIMD3(conePos.x - anchorPos.x, conePos.y - anchorPos.y, conePos.z - anchorPos.z))
+        
+        let angle = acos(dot(anchorToCamera, anchorToCone))
+        
+        
+        cameras[index].seesIpad = angle < entity.fovAngle
+    }
+    
+    func getCamera(for id: UInt64) -> Camera? {
+        cameras.first(where: { $0.entity.id == id })
+    }
+    
+    func toggleCone(for camera: Camera) {
+        let index = cameras.index(of: camera)
+        cameras[index].toggleFOVCone()
+    }
+    
     init(arView: ARView) {
         self.arView = arView
+    }
+}
+
+extension Array where Element == Camera {
+    func index(of camera: Camera) -> Int {
+        self.firstIndex(where: { $0.id == camera.id })!
     }
 }
