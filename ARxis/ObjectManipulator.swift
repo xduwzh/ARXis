@@ -9,41 +9,41 @@ import SwiftUI
 struct ArrowView: View {
     static let width: CGFloat = 20
     static let spacing: CGFloat = 7
-    
+
     let columns = [
         GridItem(.fixed(ArrowView.width)),
         GridItem(.fixed(ArrowView.width)),
         GridItem(.fixed(ArrowView.width)),
     ]
-    
+
     let icons = [
-        nil,          "arrow.up",    nil,
-        "arrow.left", nil,          "arrow.right",
-        nil,          "arrow.down", nil,
+        nil, "arrow.up", nil,
+        "arrow.left", nil, "arrow.right",
+        nil, "arrow.down", nil,
     ]
-    
+
     var onArrowUp: (() -> Void)?
     var onArrowLeft: (() -> Void)?
     var onArrowRight: (() -> Void)?
     var onArrowDown: (() -> Void)?
-    
+
     var body: some View {
         LazyVGrid(columns: columns, spacing: ArrowView.spacing) {
-            ForEach(0..<9) { index in
+            ForEach(0 ..< 9) { index in
                 if let icon = icons[index] {
                     Image(systemName: icon)
                         .onTapGesture {
-                            switch(icon) {
-                                case "arrow.up":
-                                    self.onArrowUp?()
-                                case "arrow.left":
-                                    self.onArrowLeft?()
-                                case "arrow.right":
-                                    self.onArrowRight?()
-                                case "arrow.down":
-                                    self.onArrowDown?()
-                                default:
-                                    break
+                            switch icon {
+                            case "arrow.up":
+                                self.onArrowUp?()
+                            case "arrow.left":
+                                self.onArrowLeft?()
+                            case "arrow.right":
+                                self.onArrowRight?()
+                            case "arrow.down":
+                                self.onArrowDown?()
+                            default:
+                                break
                             }
                         }
                 } else {
@@ -52,18 +52,17 @@ struct ArrowView: View {
             }
         }
     }
-    
 }
 
 struct ObjectManipulator: View {
-    var onArrowUp: (() -> Void)
-    var onArrowLeft: (() -> Void)
-    var onArrowRight: (() -> Void)
-    var onArrowDown: (() -> Void)
-    var onTrashClick: (() -> Void)
-    var onConeClick: (() -> Void)
+    var onArrowUp: () -> Void
+    var onArrowLeft: () -> Void
+    var onArrowRight: () -> Void
+    var onArrowDown: () -> Void
+    var onTrashClick: () -> Void
+    var onConeClick: () -> Void
     @State var coneActive: Bool
-    
+
     var body: some View {
         HStack {
             ArrowView(
@@ -75,7 +74,7 @@ struct ObjectManipulator: View {
             .font(.system(size: 20))
             .padding()
             Spacer()
-            VStack() {
+            VStack {
                 Image(systemName: coneActive ? "cone.fill" : "cone")
                     .onTapGesture {
                         coneActive = !coneActive

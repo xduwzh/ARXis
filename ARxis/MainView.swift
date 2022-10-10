@@ -14,7 +14,7 @@ extension ARView: ObservableObject {}
 struct MainView: View {
     @ObservedObject var sceneManager: SceneManager
     @EnvironmentObject private var arView: ARView
-    @State private var selectedCamera: Camera?
+    @State private var selectedCamera: CameraInScene?
 
     var cameraPos: CGPoint {
         if let entity = selectedCamera?.cameraEntity {
@@ -50,10 +50,10 @@ struct MainView: View {
                             ),
                             arrowEdge: .trailing) { camera in
                                 ObjectManipulator(
-                                    onArrowUp: { camera.rotate(angle: -.pi/13, axis: .vertical) },
-                                    onArrowLeft: { camera.rotate(angle: .pi/13, axis: .horizontal) },
-                                    onArrowRight: { camera.rotate(angle: -.pi/13, axis: .horizontal) },
-                                    onArrowDown: { camera.rotate(angle: .pi/13, axis: .vertical) },
+                                    onArrowUp: { camera.rotate(angle: -.pi / 13, axis: .vertical) },
+                                    onArrowLeft: { camera.rotate(angle: .pi / 13, axis: .horizontal) },
+                                    onArrowRight: { camera.rotate(angle: -.pi / 13, axis: .horizontal) },
+                                    onArrowDown: { camera.rotate(angle: .pi / 13, axis: .vertical) },
                                     onTrashClick: {
                                         sceneManager.removeCamera(camera)
                                         selectedCamera = nil
@@ -61,8 +61,7 @@ struct MainView: View {
                                     onConeClick: { sceneManager.toggleCone(for: camera) },
                                     coneActive: camera.coneActive
                                 )
-                                
-                            }
+                        }
                 }
                 CameraList(cameras: sceneManager.cameras) { camera in
                     selectedCamera = camera

@@ -17,25 +17,23 @@ class ConeEntity: Entity, HasModel {
     var sceneManager: SceneManager {
         self.components[IsCone.self]!.sceneManager
     }
-    
+
     var radius: Float = -1
     var height: Float = -1
-    
+
     var fovAngle: Float {
-        atan(radius/height)
+        atan(radius / height)
     }
-    
+
     init(radius: Float, height: Float, materials: [Material], sceneManager: SceneManager) {
         super.init()
-        
-        
+
         let mesh = try! MeshResource.generateCone(radius: radius, height: height, sides: 64, smoothNormals: true)
-            
+
         self.model = ModelComponent(mesh: mesh, materials: materials)
         self.components[IsCone.self] = IsCone(sceneManager: sceneManager)
-        
+
         self.radius = radius
         self.height = height
-        
     }
 }

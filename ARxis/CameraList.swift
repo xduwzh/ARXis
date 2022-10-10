@@ -7,23 +7,23 @@
 
 import SwiftUI
 
-extension Camera {
+extension CameraInScene {
     func toCameraModel() -> CameraModel {
         CAMERAS.first { cameraModel in
-            cameraModel.name == self.cameraModel
+            cameraModel.name == self.cameraModelName
         }!
     }
 }
 
 struct CameraList: View {
-    let cameras: [Camera]
-    var onCameraTap: (Camera) -> Void
-        
+    let cameras: [CameraInScene]
+    var onCameraTap: (CameraInScene) -> Void
+
     var body: some View {
         ScrollView(.horizontal) {
             HStack {
                 ForEach(cameras) { camera in
-                    VStack{
+                    VStack {
                         Image(uiImage: camera.toCameraModel().image)
                             .resizable()
                             .frame(width: 100, height: 100)

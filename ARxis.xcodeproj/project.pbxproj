@@ -17,7 +17,7 @@
 		3A610E2228D9F68F00E5B77B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A610E2128D9F68F00E5B77B /* Preview Assets.xcassets */; };
 		3A610E2928D9F6B800E5B77B /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A610E2828D9F6B800E5B77B /* CameraPicker.swift */; };
 		3A84841428E3276900736A4C /* ObjectManipulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841328E3276900736A4C /* ObjectManipulator.swift */; };
-		3A84841628E32D2C00736A4C /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841528E32D2C00736A4C /* Camera.swift */; };
+		3A84841628E32D2C00736A4C /* CameraInScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841528E32D2C00736A4C /* CameraInScene.swift */; };
 		3A84841828E3471200736A4C /* MeshResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841728E3471200736A4C /* MeshResource.swift */; };
 		3A84841A28E34E4900736A4C /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841928E34E4900736A4C /* shaders.metal */; };
 		3AAE137228EDCBDF003F06BE /* ECS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAE137128EDCBDF003F06BE /* ECS.swift */; };
@@ -39,7 +39,7 @@
 		3A610E2128D9F68F00E5B77B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3A610E2828D9F6B800E5B77B /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
 		3A84841328E3276900736A4C /* ObjectManipulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManipulator.swift; sourceTree = "<group>"; };
-		3A84841528E32D2C00736A4C /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		3A84841528E32D2C00736A4C /* CameraInScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraInScene.swift; sourceTree = "<group>"; };
 		3A84841728E3471200736A4C /* MeshResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshResource.swift; sourceTree = "<group>"; };
 		3A84841928E34E4900736A4C /* shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shaders.metal; sourceTree = "<group>"; };
 		3AAE137128EDCBDF003F06BE /* ECS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECS.swift; sourceTree = "<group>"; };
@@ -87,7 +87,7 @@
 				3ADB8F7928EC77F500054812 /* AXIS-M4216_LV.usdz */,
 				3A610E2028D9F68F00E5B77B /* Preview Content */,
 				3AAE137328EDCC8A003F06BE /* Utils */,
-				3A84841528E32D2C00736A4C /* Camera.swift */,
+				3A84841528E32D2C00736A4C /* CameraInScene.swift */,
 				3A610E1A28D9F68E00E5B77B /* MainView.swift */,
 				3A610E2828D9F6B800E5B77B /* CameraPicker.swift */,
 				3A445EBA28D9FF5F004733F5 /* SceneManager.swift */,
@@ -152,7 +152,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3A610E1028D9F68E00E5B77B /* Build configuration list for PBXProject "ARxis" */;
+			buildConfigurationList = 3A610E1028D9F68E00E5B77B /* Build configuration list for PBXProject "ARXis" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -201,7 +201,7 @@
 				3A84841428E3276900736A4C /* ObjectManipulator.swift in Sources */,
 				3A1A4C8A28E310F4003C9B43 /* TappableView.swift in Sources */,
 				3A610E1D28D9F68E00E5B77B /* Experience.rcproject in Sources */,
-				3A84841628E32D2C00736A4C /* Camera.swift in Sources */,
+				3A84841628E32D2C00736A4C /* CameraInScene.swift in Sources */,
 				3A84841A28E34E4900736A4C /* shaders.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -396,7 +396,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3A610E1028D9F68E00E5B77B /* Build configuration list for PBXProject "ARxis" */ = {
+		3A610E1028D9F68E00E5B77B /* Build configuration list for PBXProject "ARXis" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3A610E2328D9F68F00E5B77B /* Debug */,
