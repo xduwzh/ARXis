@@ -16,6 +16,7 @@ class ARXisSystem: System {
     func update(context: SceneUpdateContext) {
         context.scene.performQuery(Self.query).compactMap { $0 as? ConeEntity }.forEach { cone in
             cone.sceneManager.setSeesIpad(for: cone)
+            cone.sceneManager.setConePosition(for: cone)
 //            context.scene.subscribe(to: <#T##Event.Protocol#>, <#T##handler: (Event) -> Void##(Event) -> Void#>) TODO: zrobic
         }
     }

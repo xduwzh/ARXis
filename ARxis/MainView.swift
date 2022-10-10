@@ -16,56 +16,58 @@ struct MainView: View {
     @EnvironmentObject private var arView: ARView
     @State private var selectedCamera: CameraInScene?
 
-    var cameraPos: CGPoint {
-        if let entity = selectedCamera?.cameraEntity {
-            return arView.project(entity.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
-        }
-        return CGPoint(x: -1, y: -1)
-    }
+//    var cameraPos: CGPoint {
+//        if let entity = selectedCamera?.cameraEntity {
+//            return arView.project(entity.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
+//        }
+//        return CGPoint(x: -1, y: -1)
+//    }
 
     var body: some View {
         HStack {
             ZStack(alignment: .bottomLeading) {
-                GeometryReader { geometry in
-                    ARViewContainer()
-                        .edgesIgnoringSafeArea(.all)
-                        .onDrop(of: [.utf8PlainText], isTargeted: nil) { providers, location in
-                            providers.loadFirstObject(ofType: String.self) { cameraID in
-                                let result = arView.raycast(from: location, allowing: .estimatedPlane, alignment: .any)
-                                if let hit = result.first, let camera = CAMERAS.first(where: { $0.id == cameraID }) {
-                                    sceneManager.placeCamera(camera, transform: hit.worldTransform)
+                GeometryReader { _ in
+                    ZStack {
+                        ARViewContainer()
+                            .edgesIgnoringSafeArea(.all)
+                            .onDrop(of: [.utf8PlainText], isTargeted: nil) { providers, location in
+                                providers.loadFirstObject(ofType: String.self) { cameraID in
+                                    let result = arView.raycast(from: location, allowing: .estimatedPlane, alignment: .any)
+                                    if let hit = result.first, let camera = CAMERAS.first(where: { $0.id == cameraID }) {
+                                        sceneManager.placeCamera(camera, transform: hit.worldTransform)
+                                    }
                                 }
                             }
-                        }
-                        .onTap { point in
-                            selectedCamera = sceneManager.getCamera(at: point)
-                        }
-                        .popover(
-                            item: $selectedCamera,
-                            attachmentAnchor: .point(
-                                UnitPoint(
-                                    x: cameraPos.x / geometry.size.width,
-                                    y: cameraPos.y / geometry.size.height
-                                )
-                            ),
-                            arrowEdge: .trailing) { camera in
-                                ObjectManipulator(
-                                    onArrowUp: { camera.rotate(angle: -.pi / 13, axis: .vertical) },
-                                    onArrowLeft: { camera.rotate(angle: .pi / 13, axis: .horizontal) },
-                                    onArrowRight: { camera.rotate(angle: -.pi / 13, axis: .horizontal) },
-                                    onArrowDown: { camera.rotate(angle: .pi / 13, axis: .vertical) },
-                                    onTrashClick: {
-                                        sceneManager.removeCamera(camera)
-                                        selectedCamera = nil
-                                    },
-                                    onConeClick: { sceneManager.toggleCone(for: camera) },
-                                    coneActive: camera.coneActive
+                            .onTap { point in
+                                selectedCamera = sceneManager.getCamera(at: point)
+                            }
+
+                        if selectedCamera != nil {
+                            ObjectManipulator(
+                                onArrowUp: { selectedCamera!.rotate(angle: -.pi / 13, axis: .vertical) },
+                                onArrowLeft: { selectedCamera!.rotate(angle: .pi / 13, axis: .horizontal) },
+                                onArrowRight: { selectedCamera!.rotate(angle: -.pi / 13, axis: .horizontal) },
+                                onArrowDown: { selectedCamera!.rotate(angle: .pi / 13, axis: .vertical) },
+                                onTrashClick: {
+                                    sceneManager.removeCamera(selectedCamera!)
+                                    selectedCamera = nil
+                                },
+                                onConeClick: { sceneManager.toggleCone(for: selectedCamera!) },
+                                coneActive: selectedCamera!.coneActive
+                            )
+                                .position(
+                                    CGPoint(
+                                        x: (sceneManager.conePositions[selectedCamera!.cone.id]?.x ?? 0),
+                                        y: (sceneManager.conePositions[selectedCamera!.cone.id]?.y ?? 0) + 100
+                                    )
                                 )
                         }
+                    }
                 }
                 CameraList(cameras: sceneManager.cameras) { camera in
                     selectedCamera = camera
-                }.padding()
+                }
+                .padding()
             }
             CameraPicker()
         }

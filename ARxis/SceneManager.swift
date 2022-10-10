@@ -24,7 +24,9 @@ class SceneManager: ObservableObject {
     }
 
     @Published var cameras: [CameraInScene] = []
-
+    @Published var conePositions: [UInt64?: CGPoint] = [:]
+    
+    
     func placeCamera(_ camera: CameraModel, transform: simd_float4x4) {
         let anchor = AnchorEntity(world: transform)
         let cone = createCone(radius: 1, height: 2)
@@ -38,13 +40,12 @@ class SceneManager: ObservableObject {
         object.addChild(coneAnchor)
 
         arView.installGestures(.translation, for: object)
-        let x = arView.gestureRecognizers
-
+ 
         arView.scene.anchors.append(anchor)
-        cameras.append(CameraInScene(anchor: anchor, cameraModelName: camera.name))
+        cameras.append(CameraInScene(anchor: anchor, cameraModelName: camera.name, cone: cone))
     }
 
-    func createCone(radius: Float, height: Float) -> Entity {
+    func createCone(radius: Float, height: Float) -> ConeEntity {
         let material = SimpleMaterial(color: .random(alpha: 0.7), isMetallic: false)
 
         var custom = try! CustomMaterial(
@@ -55,8 +56,9 @@ class SceneManager: ObservableObject {
         custom.faceCulling = .none
         custom.baseColor = .init(tint: material.color.tint)
 
-        let coneEntity = ConeEntity(radius: radius, height: height, materials: [custom], sceneManager: self)
-        return coneEntity
+        return ConeEntity(
+            radius: radius, height: height, materials: [custom], sceneManager: self
+        )
     }
 
     func getCamera(at point: CGPoint) -> CameraInScene? {
@@ -100,6 +102,13 @@ class SceneManager: ObservableObject {
         let angle = acos(dot(anchorToCamera, anchorToCone))
 
         cameras[index].seesIpad = angle < entity.fovAngle
+    }
+    
+    func setConePosition(for cone: ConeEntity) {
+        if let anchor = cone.anchor {
+            let pos = arView.project(anchor.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
+            conePositions[cone.id] = pos
+        }
     }
 
     func getCamera(for id: UInt64) -> CameraInScene? {

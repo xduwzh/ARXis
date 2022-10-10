@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3A1A4C8A28E310F4003C9B43 /* TappableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1A4C8928E310F4003C9B43 /* TappableView.swift */; };
+		3A2DA1D028F46FB5002C422A /* FloatingPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2DA1CF28F46FB5002C422A /* FloatingPopover.swift */; };
 		3A445EB928D9FB75004733F5 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A445EB828D9FB75004733F5 /* extensions.swift */; };
 		3A445EBB28D9FF5F004733F5 /* SceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A445EBA28D9FF5F004733F5 /* SceneManager.swift */; };
 		3A610E1928D9F68E00E5B77B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A610E1828D9F68E00E5B77B /* AppDelegate.swift */; };
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		3A1A4C8928E310F4003C9B43 /* TappableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TappableView.swift; sourceTree = "<group>"; };
+		3A2DA1CF28F46FB5002C422A /* FloatingPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingPopover.swift; sourceTree = "<group>"; };
 		3A445EB828D9FB75004733F5 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		3A445EBA28D9FF5F004733F5 /* SceneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneManager.swift; sourceTree = "<group>"; };
 		3A610E1528D9F68E00E5B77B /* ARXis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARXis.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -113,6 +115,7 @@
 			children = (
 				3A1A4C8928E310F4003C9B43 /* TappableView.swift */,
 				3A445EB828D9FB75004733F5 /* extensions.swift */,
+				3A2DA1CF28F46FB5002C422A /* FloatingPopover.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -193,6 +196,7 @@
 				3A610E2928D9F6B800E5B77B /* CameraPicker.swift in Sources */,
 				3A84841828E3471200736A4C /* MeshResource.swift in Sources */,
 				3A610E1B28D9F68E00E5B77B /* MainView.swift in Sources */,
+				3A2DA1D028F46FB5002C422A /* FloatingPopover.swift in Sources */,
 				3AAE137728EDCDA9003F06BE /* Entities.swift in Sources */,
 				3ADB8F7D28EC875800054812 /* CameraList.swift in Sources */,
 				3A610E1928D9F68E00E5B77B /* AppDelegate.swift in Sources */,
@@ -331,7 +335,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ARxis/Preview Content\"";
-				DEVELOPMENT_TEAM = GR6TGNPX8N;
+				DEVELOPMENT_TEAM = W94K4L9DHP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
@@ -347,7 +351,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = grzegorz.ARxis;
+				PRODUCT_BUNDLE_IDENTIFIER = akrolczyk.lu.ARXis;
 				PRODUCT_NAME = ARXis;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -366,7 +370,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ARxis/Preview Content\"";
-				DEVELOPMENT_TEAM = GR6TGNPX8N;
+				DEVELOPMENT_TEAM = W94K4L9DHP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
@@ -382,7 +386,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = grzegorz.ARxis;
+				PRODUCT_BUNDLE_IDENTIFIER = akrolczyk.lu.ARXis;
 				PRODUCT_NAME = ARXis;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

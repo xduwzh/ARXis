@@ -9,6 +9,19 @@ import Foundation
 import RealityKit
 import SwiftUI
 
+enum Axis {
+    case horizontal, vertical
+
+    var simd: SIMD3<Float> {
+        switch self {
+        case .horizontal:
+            return [0, 0, 1]
+        case .vertical:
+            return [1, 0, 0]
+        }
+    }
+}
+
 struct CameraInScene: Identifiable {
     var id: ObjectIdentifier {
         anchor.id
@@ -16,36 +29,28 @@ struct CameraInScene: Identifiable {
 
     let anchor: AnchorEntity
     let cameraModelName: String
-    var movablePart: Entity {
-        return anchor.children[0].children[anchor.children[0].children.endIndex - 1]
+    let cone: ConeEntity
+    var seesIpad: Bool
+
+    var movablePart: Entity
+    var cameraEntity: Entity
+
+    init(anchor: AnchorEntity, cameraModelName: String, cone: ConeEntity) {
+        self.anchor = anchor
+        self.cameraModelName = cameraModelName
+        self.cone = cone
+        self.seesIpad = false
+        
+        self.cameraEntity = anchor.children[0]
+        self.movablePart = self.cameraEntity.children[self.cameraEntity.children.endIndex - 1]
     }
 
     var coneActive: Bool {
-        movablePart.isActive
+        cone.isActive
     }
-
-    var cameraEntity: Entity {
-        anchor.children[0]
-        
-    }
-
-    var seesIpad = false
 
     func toggleFOVCone() {
         movablePart.isEnabled.toggle()
-    }
-
-    enum Axis {
-        case horizontal, vertical
-
-        var simd: SIMD3<Float> {
-            switch self {
-            case .horizontal:
-                return [0, 0, 1]
-            case .vertical:
-                return [1, 0, 0]
-            }
-        }
     }
 
     func rotate(angle: Float, axis: Axis) {
@@ -78,7 +83,8 @@ struct CameraModel: Identifiable {
     }
 
     func getNew() -> ModelEntity {
-        return model.clone(recursive: true)
+        let clone = model.clone(recursive: true)
+        return clone
     }
 }
 
