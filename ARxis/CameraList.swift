@@ -27,6 +27,7 @@ struct CameraList: View {
                         Image(uiImage: camera.toCameraModel().image)
                             .resizable()
                             .frame(width: 100, height: 100)
+                            .cornerRadius(10)
                             .padding()
                         Image(systemName: camera.seesIpad ? "checkmark.square" : "x.square")
                             .foregroundColor(camera.seesIpad ? .green : .red)
@@ -38,5 +39,6 @@ struct CameraList: View {
                 }
             }
         }
+        .background(Color(white: 0.5, opacity: 0.5))
     }
 }

@@ -14,6 +14,7 @@ struct CameraPicker: View {
                 Image(uiImage: camera.image)
                     .resizable()
                     .frame(width: 100, height: 100)
+                    .cornerRadius(10)
                     .onDrag {
                         return NSItemProvider(object: camera.id as NSString)
                     }

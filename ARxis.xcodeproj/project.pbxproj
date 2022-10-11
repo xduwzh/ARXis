@@ -155,7 +155,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3A610E1028D9F68E00E5B77B /* Build configuration list for PBXProject "ARXis" */;
+			buildConfigurationList = 3A610E1028D9F68E00E5B77B /* Build configuration list for PBXProject "ARxis" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -400,7 +400,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3A610E1028D9F68E00E5B77B /* Build configuration list for PBXProject "ARXis" */ = {
+		3A610E1028D9F68E00E5B77B /* Build configuration list for PBXProject "ARxis" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3A610E2328D9F68F00E5B77B /* Debug */,

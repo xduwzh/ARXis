@@ -34,14 +34,15 @@ struct MainView: View {
                                 providers.loadFirstObject(ofType: String.self) { cameraID in
                                     let result = arView.raycast(from: location, allowing: .estimatedPlane, alignment: .any)
                                     if let hit = result.first, let camera = CAMERAS.first(where: { $0.id == cameraID }) {
-                                        sceneManager.placeCamera(camera, transform: hit.worldTransform)
+                                        withAnimation(.linear(duration: 0.3)) {
+                                            sceneManager.placeCamera(camera, transform: hit.worldTransform)
+                                        }
                                     }
                                 }
                             }
                             .onTap { point in
                                 selectedCamera = sceneManager.getCamera(at: point)
                             }
-
                         if selectedCamera != nil {
                             ObjectManipulator(
                                 onArrowUp: { selectedCamera!.rotate(angle: -.pi / 13, axis: .vertical) },
@@ -51,16 +52,18 @@ struct MainView: View {
                                 onTrashClick: {
                                     sceneManager.removeCamera(selectedCamera!)
                                     selectedCamera = nil
+
                                 },
                                 onConeClick: { sceneManager.toggleCone(for: selectedCamera!) },
                                 coneActive: selectedCamera!.coneActive
                             )
-                                .position(
-                                    CGPoint(
-                                        x: (sceneManager.conePositions[selectedCamera!.cone.id]?.x ?? 0),
-                                        y: (sceneManager.conePositions[selectedCamera!.cone.id]?.y ?? 0) + 100
-                                    )
+                            .position(
+                                CGPoint(
+                                    x: sceneManager.conePositions[selectedCamera!.cone.id]?.x ?? 0,
+                                    y: (sceneManager.conePositions[selectedCamera!.cone.id]?.y ?? 0) + 100
                                 )
+                            )
+                            .clipped()
                         }
                     }
                 }

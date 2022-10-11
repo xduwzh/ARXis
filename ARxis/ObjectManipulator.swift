@@ -31,21 +31,17 @@ struct ArrowView: View {
         LazyVGrid(columns: columns, spacing: ArrowView.spacing) {
             ForEach(0 ..< 9) { index in
                 if let icon = icons[index] {
-                    Image(systemName: icon)
-                        .onTapGesture {
-                            switch icon {
-                                case "arrow.up":
-                                    self.onArrowUp?()
-                                case "arrow.left":
-                                    self.onArrowLeft?()
-                                case "arrow.right":
-                                    self.onArrowRight?()
-                                case "arrow.down":
-                                    self.onArrowDown?()
-                                default:
-                                    break
-                            }
+                    Button(action: {
+                        switch icon {
+                            case "arrow.up": self.onArrowUp?()
+                            case "arrow.left": self.onArrowLeft?()
+                            case "arrow.right": self.onArrowRight?()
+                            case "arrow.down": self.onArrowDown?()
+                            default: break
                         }
+                    }, label: {
+                        Image(systemName: icon)}
+                    )
                 } else {
                     Image(systemName: "square").opacity(0)
                 }
@@ -75,21 +71,23 @@ struct ObjectManipulator: View {
             .padding()
             Spacer()
             VStack {
-                Image(systemName: coneActive ? "cone.fill" : "cone")
-                    .onTapGesture {
-                        coneActive = !coneActive
-                        onConeClick()
-                    }
+                Button(action: {
+                    coneActive = !coneActive
+                    onConeClick()
+                }, label: {
+                    Image(systemName: coneActive ? "cone.fill" : "cone")
+                })
                 Spacer()
-                Image(systemName: "trash.fill")
-                    .onTapGesture {
-                        onTrashClick()
-                    }
+                Button(action: {
+                    onTrashClick()
+                }, label: {
+                    Image(systemName: "trash.fill")
+                })
             }.padding()
         }
         .frame(width: 180, height: 100)
         .background(RadialGradient(gradient: Gradient(colors: gradientColors), center: .center, startRadius: 70, endRadius: 10))
-        .cornerRadius(30)
+        .cornerRadius(20)
     }
     
     let gradientColors = [
