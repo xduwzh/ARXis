@@ -17,6 +17,7 @@
 		3A610E1F28D9F68F00E5B77B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A610E1E28D9F68F00E5B77B /* Assets.xcassets */; };
 		3A610E2228D9F68F00E5B77B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A610E2128D9F68F00E5B77B /* Preview Assets.xcassets */; };
 		3A610E2928D9F6B800E5B77B /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A610E2828D9F6B800E5B77B /* CameraPicker.swift */; };
+		3A74573228F7021C005E2F66 /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A74573128F7021C005E2F66 /* CameraModel.swift */; };
 		3A84841428E3276900736A4C /* ObjectManipulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841328E3276900736A4C /* ObjectManipulator.swift */; };
 		3A84841628E32D2C00736A4C /* CameraInScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841528E32D2C00736A4C /* CameraInScene.swift */; };
 		3A84841828E3471200736A4C /* MeshResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841728E3471200736A4C /* MeshResource.swift */; };
@@ -40,6 +41,7 @@
 		3A610E1E28D9F68F00E5B77B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3A610E2128D9F68F00E5B77B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3A610E2828D9F6B800E5B77B /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
+		3A74573128F7021C005E2F66 /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
 		3A84841328E3276900736A4C /* ObjectManipulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectManipulator.swift; sourceTree = "<group>"; };
 		3A84841528E32D2C00736A4C /* CameraInScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraInScene.swift; sourceTree = "<group>"; };
 		3A84841728E3471200736A4C /* MeshResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshResource.swift; sourceTree = "<group>"; };
@@ -89,8 +91,9 @@
 				3ADB8F7928EC77F500054812 /* AXIS-M4216_LV.usdz */,
 				3A610E2028D9F68F00E5B77B /* Preview Content */,
 				3AAE137328EDCC8A003F06BE /* Utils */,
-				3A84841528E32D2C00736A4C /* CameraInScene.swift */,
 				3A610E1A28D9F68E00E5B77B /* MainView.swift */,
+				3A84841528E32D2C00736A4C /* CameraInScene.swift */,
+				3A74573128F7021C005E2F66 /* CameraModel.swift */,
 				3A610E2828D9F6B800E5B77B /* CameraPicker.swift */,
 				3A445EBA28D9FF5F004733F5 /* SceneManager.swift */,
 				3A84841328E3276900736A4C /* ObjectManipulator.swift */,
@@ -198,6 +201,7 @@
 				3A610E1B28D9F68E00E5B77B /* MainView.swift in Sources */,
 				3A2DA1D028F46FB5002C422A /* FloatingPopover.swift in Sources */,
 				3AAE137728EDCDA9003F06BE /* Entities.swift in Sources */,
+				3A74573228F7021C005E2F66 /* CameraModel.swift in Sources */,
 				3ADB8F7D28EC875800054812 /* CameraList.swift in Sources */,
 				3A610E1928D9F68E00E5B77B /* AppDelegate.swift in Sources */,
 				3A445EBB28D9FF5F004733F5 /* SceneManager.swift in Sources */,

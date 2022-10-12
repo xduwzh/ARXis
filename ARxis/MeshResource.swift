@@ -213,3 +213,56 @@ internal extension SIMD3 where Scalar == Float {
         return sqrt(length_squared(self))
     }
 }
+
+fileprivate struct Vertex {
+    let x: Float
+    let y: Float
+    let z: Float
+
+    init(_ x: Float, _ y: Float, _ z: Float) {
+        self.x = x
+        self.y = y
+        self.z = z
+    }
+    
+    var simd: SIMD3<Float> {
+        return [self.x, self.y, self.z]
+    }
+    
+}
+
+extension MeshResource {
+    private static func generatePyramidVertices(height: Float, hFOV: Float, vFOV: Float) -> [Vertex] {
+        let x = height * tan(hFOV.toRadians / 2)
+        let z = height * tan(vFOV.toRadians / 2)
+        return [
+            Vertex(0, 0, 0),
+            Vertex(x, height, z),
+            Vertex(x, height, -z),
+            Vertex(-x, height, z),
+            Vertex(-x, height, -z),
+        ]
+    }
+
+    private static var verticesIndices: [UInt32] {
+        return [0, 2, 1,
+                0, 4, 2,
+                0, 3, 4,
+                0, 1, 3,]
+                // top of the pyramid, the rectangle
+//                1, 2, 3,
+//                2, 4, 3]
+    }
+
+    // FOVS in degrees
+    public static  func generatePyramid(height: Float, horizontalFOV: Float, verticalFOV: Float) throws -> MeshResource {
+        let vertices = generatePyramidVertices(height: height, hFOV: horizontalFOV, vFOV: verticalFOV)
+        
+        var descriptor = MeshDescriptor()
+        descriptor.positions = MeshBuffers.Positions(vertices.map { $0.simd })
+        descriptor.primitives = .triangles(verticesIndices)
+        
+        return try MeshResource.generate(from: [descriptor])
+        
+    }
+}

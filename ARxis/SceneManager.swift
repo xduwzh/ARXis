@@ -24,43 +24,39 @@ class SceneManager: ObservableObject {
     }
 
     @Published var cameras: [CameraInScene] = []
-    @Published var conePositions: [UInt64?: CGPoint] = [:]
+    @Published var lensesPositions: [UInt64?: CGPoint] = [:]
     
     
     func placeCamera(_ camera: CameraModel, transform: simd_float4x4) {
         let anchor = AnchorEntity(world: transform)
-        let cone = createCone(radius: 1, height: 2)
         let object = camera.getNew()
+        
+        let fov = createFOV(height: 0.4, vFOV: camera.vFOV, hFOV: camera.hFOV, culling: .none)
         let coneAnchor = Entity()
-        cone.transform.matrix.columns.3.y = 1
-        cone.orientation = simd_quatf(angle: .pi, axis: [0, 0, 1])
 
-        coneAnchor.addChild(cone)
+        coneAnchor.addChild(fov)
         anchor.addChild(object)
         object.addChild(coneAnchor)
 
         arView.installGestures(.translation, for: object)
  
         arView.scene.anchors.append(anchor)
-        cameras.append(CameraInScene(anchor: anchor, cameraModelName: camera.name, cone: cone))
+        cameras.append(CameraInScene(anchor: anchor, cameraModelName: camera.name, fov: fov))
     }
-
-    func createCone(radius: Float, height: Float) -> ConeEntity {
-        let material = SimpleMaterial(color: .random(alpha: 0.7), isMetallic: false)
-
-        var custom = try! CustomMaterial(
+    
+    func createFOV(height: Float, vFOV: Float, hFOV: Float, culling: CustomMaterial.FaceCulling) -> FOVEntity {
+        let material = SimpleMaterial(color: .random(alpha: 0.6), isMetallic: false)
+        
+        var custom1 = try! CustomMaterial(
             from: material,
             geometryModifier: .init(named: "emptyGeometryModifier", in: library)
         )
-
-        custom.faceCulling = .none
-        custom.baseColor = .init(tint: material.color.tint)
-
-        return ConeEntity(
-            radius: radius, height: height, materials: [custom], sceneManager: self
-        )
+        custom1.faceCulling = culling
+        custom1.baseColor = .init(tint: material.color.tint)
+        
+        return FOVEntity(height: height, vFOV: vFOV, hFOV: hFOV, materials: [custom1], sceneManager: self)
     }
-
+    
     func getCamera(at point: CGPoint) -> CameraInScene? {
         let res = arView.hitTest(point)
         if let first = res.first {
@@ -75,39 +71,48 @@ class SceneManager: ObservableObject {
         cameras.removeAll { $0.id == camera.id }
     }
 
-    func setSeesIpad(for entity: ConeEntity) {
+    func setSeesIpad(for entity: FOVEntity) {
         guard let camera = getCamera(for: entity.anchor!.id) else { return }
-
-        let anchorPos = camera.cameraEntity.position(relativeTo: nil)
+        
         let ipadPos = arView.cameraTransform.matrix.columns.3
-        let conePos = entity.position(relativeTo: nil)
-
+        
+        let ipadEntity = Entity()
+        ipadEntity.move(to: camera.cameraEntity.transform, relativeTo: nil)
+        
+        let relativeIpadPos = ipadEntity.position(relativeTo: entity)
+        
+        let x = relativeIpadPos.y * tan(entity.hFOV.toRadians / 2)
+        let z = relativeIpadPos.y * tan(entity.vFOV.toRadians / 2)
+        
+        let seesIpad = x > relativeIpadPos.x && z > relativeIpadPos.z
         let index = cameras.index(of: camera)
-
-        let result = arView.scene.raycast(from: SIMD3(ipadPos.x, ipadPos.y, ipadPos.z), to: anchorPos, query: .nearest)
-        if let hit = result.first, let anch = hit.entity.anchor {
-            debugPrint(Date(), anch.id)
-            if anch.id != camera.anchor.id {
-                cameras[index].seesIpad = false
-                return
-            }
-        } else {
-            cameras[index].seesIpad = false
-            return
-        }
-
-        let anchorToCamera = normalize(SIMD3(ipadPos.x - anchorPos.x, ipadPos.y - anchorPos.y, ipadPos.z - anchorPos.z))
-        let anchorToCone = normalize(SIMD3(conePos.x - anchorPos.x, conePos.y - anchorPos.y, conePos.z - anchorPos.z))
-
-        let angle = acos(dot(anchorToCamera, anchorToCone))
-
-        cameras[index].seesIpad = angle < entity.fovAngle
+        cameras[index].seesIpad = seesIpad
+        
+//        let result = arView.scene.raycast(from: SIMD3(ipadPos.x, ipadPos.y, ipadPos.z), to: anchorPos, query: .nearest)
+//        if let hit = result.first, let anch = hit.entity.anchor {
+//            debugPrint(Date(), anch.id)
+//            if anch.id != camera.anchor.id {
+//                cameras[index].seesIpad = false
+//                return
+//            }
+//        } else {
+//            cameras[index].seesIpad = false
+//            return
+//        }
+//
+//        let anchorToCamera = normalize(SIMD3(ipadPos.x - anchorPos.x, ipadPos.y - anchorPos.y, ipadPos.z - anchorPos.z))
+//        let anchorToCone = normalize(SIMD3(conePos.x - anchorPos.x, conePos.y - anchorPos.y, conePos.z - anchorPos.z))
+//
+//        let angle = acos(dot(anchorToCamera, anchorToCone))
+//
+//        cameras[index].seesIpad = false
+//        //        cameras[index].seesIpad = angle < entity.fovAngle
     }
     
-    func setConePosition(for cone: ConeEntity) {
-        if let anchor = cone.anchor {
+    func setLensPosition(for fov: FOVEntity) {
+        if let anchor = fov.anchor {
             let pos = arView.project(anchor.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
-            conePositions[cone.id] = pos
+            lensesPositions[fov.id] = pos
         }
     }
 

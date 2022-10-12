@@ -58,3 +58,7 @@ extension Array where Element == NSItemProvider {
         loadObjects(ofType: theType, firstOnly: true, using: load)
     }
 }
+
+extension Float {
+    var toRadians: Float { self * .pi / 180 }
+}

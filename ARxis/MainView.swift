@@ -59,8 +59,8 @@ struct MainView: View {
                             )
                             .position(
                                 CGPoint(
-                                    x: sceneManager.conePositions[selectedCamera!.cone.id]?.x ?? 0,
-                                    y: (sceneManager.conePositions[selectedCamera!.cone.id]?.y ?? 0) + 100
+                                    x: sceneManager.lensesPositions[selectedCamera!.fov.id]?.x ?? 0,
+                                    y: (sceneManager.lensesPositions[selectedCamera!.fov.id]?.y ?? 0) + 100
                                 )
                             )
                             .clipped()
