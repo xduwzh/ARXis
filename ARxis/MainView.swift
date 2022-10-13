@@ -16,13 +16,6 @@ struct MainView: View {
     @EnvironmentObject private var arView: ARView
     @State private var selectedCamera: CameraInScene?
 
-//    var cameraPos: CGPoint {
-//        if let entity = selectedCamera?.cameraEntity {
-//            return arView.project(entity.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
-//        }
-//        return CGPoint(x: -1, y: -1)
-//    }
-
     var body: some View {
         HStack {
             ZStack(alignment: .bottomLeading) {
@@ -45,10 +38,10 @@ struct MainView: View {
                             }
                         if selectedCamera != nil {
                             ObjectManipulator(
-                                onArrowUp: { selectedCamera!.rotate(angle: -.pi / 13, axis: .vertical) },
-                                onArrowLeft: { selectedCamera!.rotate(angle: .pi / 13, axis: .horizontal) },
-                                onArrowRight: { selectedCamera!.rotate(angle: -.pi / 13, axis: .horizontal) },
-                                onArrowDown: { selectedCamera!.rotate(angle: .pi / 13, axis: .vertical) },
+                                onArrowUp: { selectedCamera!.rotate(angle: -.pi / 12, axis: .vertical) },
+                                onArrowLeft: { selectedCamera!.rotate(angle: .pi / 12, axis: .horizontal) },
+                                onArrowRight: { selectedCamera!.rotate(angle: -.pi / 12, axis: .horizontal) },
+                                onArrowDown: { selectedCamera!.rotate(angle: .pi / 12, axis: .vertical) },
                                 onTrashClick: {
                                     sceneManager.removeCamera(selectedCamera!)
                                     selectedCamera = nil

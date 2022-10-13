@@ -233,8 +233,8 @@ fileprivate struct Vertex {
 
 extension MeshResource {
     private static func generatePyramidVertices(height: Float, hFOV: Float, vFOV: Float) -> [Vertex] {
-        let x = height * tan(hFOV.toRadians / 2)
-        let z = height * tan(vFOV.toRadians / 2)
+        let x = height * tan(vFOV.toRadians / 2)
+        let z = height * tan(hFOV.toRadians / 2)
         return [
             Vertex(0, 0, 0),
             Vertex(x, height, z),

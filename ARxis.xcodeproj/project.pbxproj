@@ -23,7 +23,7 @@
 		3A84841828E3471200736A4C /* MeshResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841728E3471200736A4C /* MeshResource.swift */; };
 		3A84841A28E34E4900736A4C /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841928E34E4900736A4C /* shaders.metal */; };
 		3AAE137228EDCBDF003F06BE /* ECS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAE137128EDCBDF003F06BE /* ECS.swift */; };
-		3AAE137728EDCDA9003F06BE /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAE137628EDCDA9003F06BE /* Entities.swift */; };
+		3AAE137728EDCDA9003F06BE /* FOVEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAE137628EDCDA9003F06BE /* FOVEntity.swift */; };
 		3ADB8F7A28EC77F500054812 /* AXIS_P1375-E.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 3ADB8F7828EC77F500054812 /* AXIS_P1375-E.usdz */; };
 		3ADB8F7B28EC77F500054812 /* AXIS-M4216_LV.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 3ADB8F7928EC77F500054812 /* AXIS-M4216_LV.usdz */; };
 		3ADB8F7D28EC875800054812 /* CameraList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADB8F7C28EC875800054812 /* CameraList.swift */; };
@@ -47,7 +47,7 @@
 		3A84841728E3471200736A4C /* MeshResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshResource.swift; sourceTree = "<group>"; };
 		3A84841928E34E4900736A4C /* shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shaders.metal; sourceTree = "<group>"; };
 		3AAE137128EDCBDF003F06BE /* ECS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECS.swift; sourceTree = "<group>"; };
-		3AAE137628EDCDA9003F06BE /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
+		3AAE137628EDCDA9003F06BE /* FOVEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FOVEntity.swift; sourceTree = "<group>"; };
 		3ADB8F7828EC77F500054812 /* AXIS_P1375-E.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "AXIS_P1375-E.usdz"; sourceTree = "<group>"; };
 		3ADB8F7928EC77F500054812 /* AXIS-M4216_LV.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "AXIS-M4216_LV.usdz"; sourceTree = "<group>"; };
 		3ADB8F7C28EC875800054812 /* CameraList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraList.swift; sourceTree = "<group>"; };
@@ -100,7 +100,7 @@
 				3A84841728E3471200736A4C /* MeshResource.swift */,
 				3ADB8F7C28EC875800054812 /* CameraList.swift */,
 				3AAE137128EDCBDF003F06BE /* ECS.swift */,
-				3AAE137628EDCDA9003F06BE /* Entities.swift */,
+				3AAE137628EDCDA9003F06BE /* FOVEntity.swift */,
 			);
 			path = ARxis;
 			sourceTree = "<group>";
@@ -200,7 +200,7 @@
 				3A84841828E3471200736A4C /* MeshResource.swift in Sources */,
 				3A610E1B28D9F68E00E5B77B /* MainView.swift in Sources */,
 				3A2DA1D028F46FB5002C422A /* FloatingPopover.swift in Sources */,
-				3AAE137728EDCDA9003F06BE /* Entities.swift in Sources */,
+				3AAE137728EDCDA9003F06BE /* FOVEntity.swift in Sources */,
 				3A74573228F7021C005E2F66 /* CameraModel.swift in Sources */,
 				3ADB8F7D28EC875800054812 /* CameraList.swift in Sources */,
 				3A610E1928D9F68E00E5B77B /* AppDelegate.swift in Sources */,

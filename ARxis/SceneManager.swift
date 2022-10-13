@@ -74,17 +74,17 @@ class SceneManager: ObservableObject {
     func setSeesIpad(for entity: FOVEntity) {
         guard let camera = getCamera(for: entity.anchor!.id) else { return }
         
-        let ipadPos = arView.cameraTransform.matrix.columns.3
-        
         let ipadEntity = Entity()
-        ipadEntity.move(to: camera.cameraEntity.transform, relativeTo: nil)
+        
+        let p = arView.cameraTransform.matrix.columns.3
+        ipadEntity.move(to: Transform(translation: [p.x, p.y, p.z]), relativeTo: nil)
         
         let relativeIpadPos = ipadEntity.position(relativeTo: entity)
         
-        let x = relativeIpadPos.y * tan(entity.hFOV.toRadians / 2)
-        let z = relativeIpadPos.y * tan(entity.vFOV.toRadians / 2)
+        let x = relativeIpadPos.y * tan(entity.vFOV.toRadians / 2)
+        let z = relativeIpadPos.y * tan(entity.hFOV.toRadians / 2)
         
-        let seesIpad = x > relativeIpadPos.x && z > relativeIpadPos.z
+        let seesIpad = x > abs(relativeIpadPos.x) && z > abs(relativeIpadPos.z)
         let index = cameras.index(of: camera)
         cameras[index].seesIpad = seesIpad
         
@@ -110,10 +110,7 @@ class SceneManager: ObservableObject {
     }
     
     func setLensPosition(for fov: FOVEntity) {
-        if let anchor = fov.anchor {
-            let pos = arView.project(anchor.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
-            lensesPositions[fov.id] = pos
-        }
+        lensesPositions[fov.id] = arView.project(fov.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
     }
 
     func getCamera(for id: UInt64) -> CameraInScene? {

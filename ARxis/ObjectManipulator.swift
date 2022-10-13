@@ -57,6 +57,7 @@ struct ObjectManipulator: View {
     var onArrowDown: () -> Void
     var onTrashClick: () -> Void
     var onConeClick: () -> Void
+    
     @State var coneActive: Bool
     
     var body: some View {
@@ -97,8 +98,8 @@ struct ObjectManipulator: View {
     ]
 }
 
-func doNothing() {
-}
+func doNothing() {}
+func doNothing2(_: Float) {}
 
 struct ObjectManipulator_Previews: PreviewProvider {
     static var previews: some View {
