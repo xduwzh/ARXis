@@ -24,8 +24,9 @@ struct CameraModel: Identifiable {
         self.hFOV = hFOV
         
         let entity = try! Entity.load(named: "\(name)")
-        entity.setScale(SIMD3(repeating: 0.01), relativeTo: nil)
-        entity.orientation = simd_quatf(angle: -.pi / 2, axis: [1, 0, 0])
+//        entity.setScale(SIMD3(repeating: 0.01), relativeTo: nil)
+//        entity.orientation = simd_quatf(angle: .pi, axis: [0, 0, 1])
+//        entity.look(at: [1, 0, 0], from: [0, 0, 0], upVector: [0, 0, 1], relativeTo: entity)
         entity.generateCollisionShapes(recursive: true)
         self.model = ModelEntity()
         self.model.addChild(entity)
@@ -58,7 +59,7 @@ struct CameraModel: Identifiable {
 
 let CAMERAS: [CameraModel] = [
     CameraModel(name: "AXIS-M4216_LV", vFOV: 100, hFOV: 72),
-    CameraModel(name: "AXIS_P1375-E", model: createBox(size: 0.2), vFOV: 107, hFOV: 57),
+    CameraModel(name: "AXIS_P1375-E", vFOV: 107, hFOV: 57),
 ]
 
 
