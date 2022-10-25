@@ -40,7 +40,7 @@ class FOVEntity: Entity, HasModel {
     private func createEdges() {
         let x = self.height * tan(self.vFOV.toRadians / 2)
         let z = self.height * tan(self.hFOV.toRadians / 2)
-        
+
         var edges: [Entity] = []
         let depth = length(SIMD3([x, self.height, z]))
         for _ in 0 ..< 4 {

@@ -57,36 +57,54 @@ struct ObjectManipulator: View {
     var onArrowDown: () -> Void
     var onTrashClick: () -> Void
     var onConeClick: () -> Void
+    var onSliderValueChanged: (Float) -> Void
     
-    @State var coneActive: Bool
+    @State var fovActive: Bool
+    @State var fovHeight: Float = 1
     
     var body: some View {
-        HStack {
-            ArrowView(
-                onArrowUp: onArrowUp,
-                onArrowLeft: onArrowLeft,
-                onArrowRight: onArrowRight,
-                onArrowDown: onArrowDown
-            )
-            .font(.system(size: 20))
-            .padding()
-            Spacer()
-            VStack {
-                Button(action: {
-                    coneActive = !coneActive
-                    onConeClick()
-                }, label: {
-                    Image(systemName: coneActive ? "cone.fill" : "cone")
-                })
+        VStack {
+            HStack {
+                ArrowView(
+                    onArrowUp: onArrowUp,
+                    onArrowLeft: onArrowLeft,
+                    onArrowRight: onArrowRight,
+                    onArrowDown: onArrowDown
+                )
+                .font(.system(size: 20))
+                .padding()
                 Spacer()
-                Button(action: {
-                    onTrashClick()
-                }, label: {
-                    Image(systemName: "trash.fill")
-                })
-            }.padding()
+                VStack {
+                    Button(action: {
+                        fovActive = !fovActive
+                        onConeClick()
+                    }, label: {
+                        Image(systemName: fovActive ? "cone.fill" : "cone")
+                    })
+                    Spacer()
+                    Button(action: {
+                        onTrashClick()
+                    }, label: {
+                        Image(systemName: "trash.fill")
+                    })
+                }.padding()
+            }
+            
+            Slider(
+                value: $fovHeight,
+                in: 0.1...5
+            ) {
+                Text("FOV Height (m)") // MARK: TODO - change
+            } minimumValueLabel: {
+                Text("0")
+            } maximumValueLabel: {
+                Text("\(Float.infinity)")
+            }
+            .onChange(of: fovHeight, perform: onSliderValueChanged)
+            .padding()
+            
         }
-        .frame(width: 180, height: 100)
+        .frame(width: 200, height: 200)
         .background(RadialGradient(gradient: Gradient(colors: gradientColors), center: .center, startRadius: 70, endRadius: 10))
         .cornerRadius(20)
     }
@@ -103,6 +121,8 @@ func doNothing2(_: Float) {}
 
 struct ObjectManipulator_Previews: PreviewProvider {
     static var previews: some View {
+        
+
         ObjectManipulator(
             onArrowUp: doNothing,
             onArrowLeft: doNothing,
@@ -110,7 +130,8 @@ struct ObjectManipulator_Previews: PreviewProvider {
             onArrowDown: doNothing,
             onTrashClick: doNothing,
             onConeClick: doNothing,
-            coneActive: false
+            onSliderValueChanged: doNothing2,
+            fovActive: false
         )
     }
 }

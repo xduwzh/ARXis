@@ -29,7 +29,7 @@ struct CameraInScene: Identifiable {
 
     let anchor: AnchorEntity
     let cameraModelName: String
-    let fov: FOVEntity
+    private(set) var fov: FOVEntity
     var seesIpad: Bool
 
     var movablePart: Entity
@@ -56,4 +56,13 @@ struct CameraInScene: Identifiable {
     func rotate(angle: Float, axis: Axis) {
         movablePart.transform.rotation *= simd_quatf(angle: angle, axis: axis.simd)
     }
+    
+    mutating func replaceFov(_ newFov: FOVEntity) {
+        if let fovParent = self.fov.parent {
+            self.fov.removeFromParent()
+            fovParent.addChild(newFov)
+            self.fov = newFov
+        }
+    }
+    
 }

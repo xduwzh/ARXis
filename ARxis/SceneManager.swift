@@ -44,7 +44,11 @@ class SceneManager: ObservableObject {
         cameras.append(CameraInScene(anchor: anchor, cameraModelName: camera.name, fov: fov))
     }
     
-    func createFOV(height: Float, vFOV: Float, hFOV: Float, culling: CustomMaterial.FaceCulling) -> FOVEntity {
+    func createFOV(height: Float, vFOV: Float, hFOV: Float, culling: CustomMaterial.FaceCulling, materials: [Material]? = nil) -> FOVEntity {
+        if let materials = materials {
+            return FOVEntity(height: height, vFOV: vFOV, hFOV: hFOV, materials: materials, sceneManager: self)
+        }
+        
         let material = SimpleMaterial(color: .random(alpha: 0.6), isMetallic: false)
         
         var custom1 = try! CustomMaterial(
@@ -55,6 +59,11 @@ class SceneManager: ObservableObject {
         custom1.baseColor = .init(tint: material.color.tint)
         
         return FOVEntity(height: height, vFOV: vFOV, hFOV: hFOV, materials: [custom1], sceneManager: self)
+    }
+    
+    func setFovHeight(of camera: CameraInScene, to height: Float) {
+        let index = cameras.index(of: camera)
+        cameras[index].replaceFov(createFOV(height: height, vFOV: camera.fov.vFOV, hFOV: camera.fov.hFOV, culling: .none, materials: camera.fov.model?.materials))
     }
     
     func getCamera(at point: CGPoint) -> CameraInScene? {

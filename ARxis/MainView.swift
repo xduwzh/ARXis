@@ -48,7 +48,9 @@ struct MainView: View {
 
                                 },
                                 onConeClick: { sceneManager.toggleCone(for: selectedCamera!) },
-                                coneActive: selectedCamera!.coneActive
+                                onSliderValueChanged: { newHeight in sceneManager.setFovHeight(of: selectedCamera!, to: newHeight) },
+                                fovActive: selectedCamera!.coneActive,
+                                fovHeight: selectedCamera!.fov.height
                             )
                             .position(
                                 CGPoint(
