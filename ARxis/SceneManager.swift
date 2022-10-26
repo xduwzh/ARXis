@@ -26,6 +26,9 @@ class SceneManager: ObservableObject {
     @Published var cameras: [CameraInScene] = []
     @Published var lensesPositions: [UInt64?: CGPoint] = [:]
 
+    init(arView: ARView) {
+        self.arView = arView
+    }
 
     func placeCamera(_ camera: CameraModel, transform: simd_float4x4) {
         let anchor = AnchorEntity(world: transform)
@@ -84,24 +87,23 @@ class SceneManager: ObservableObject {
         }
     }
 
+    func getCamera(for id: UInt64) -> CameraInScene? {
+        cameras.first(where: { $0.anchor.id == id })
+    }
+
     func setSeesIpad(for entity: FOVEntity) {
         guard let camera = getCamera(for: entity.anchor!.id) else {
             return
         }
 
-        let ipadEntity = Entity()
-
-        let p = arView.cameraTransform.matrix.columns.3
-        ipadEntity.move(to: Transform(translation: [p.x, p.y, p.z]), relativeTo: nil)
-
+        let ipadEntity = arView.getSelfEntity()
         let relativeIpadPos = ipadEntity.position(relativeTo: entity)
 
         let x = relativeIpadPos.y * tan(entity.fov.v.toRadians / 2)
         let z = relativeIpadPos.y * tan(entity.fov.h.toRadians / 2)
 
         let seesIpad = x > abs(relativeIpadPos.x) && z > abs(relativeIpadPos.z)
-        let index = cameras.index(of: camera)
-        cameras[index].seesIpad = seesIpad
+        cameras[cameras.index(of: camera)].seesIpad = seesIpad
 
 //        let result = arView.scene.raycast(from: SIMD3(ipadPos.x, ipadPos.y, ipadPos.z), to: anchorPos, query: .nearest)
 //        if let hit = result.first, let anch = hit.entity.anchor {
@@ -124,26 +126,44 @@ class SceneManager: ObservableObject {
 //        //        cameras[index].seesIpad = angle < entity.fovAngle
     }
 
+    func setPixelDensity(for entity: FOVEntity) {
+        // We calculate pixel density based on the camera's (currently set) horizontal field of view (angle), the
+        // sensor's horizontal pixel count and the distance to the target. Pixel density at the target = sensor's
+        // horizontal pixel count / (( horizontal field of view / 180 ) * Pi * the distance to the target ).
+        guard let camera = getCamera(for: entity.anchor!.id) else {
+            return
+        }
+
+        let ipadEntity = arView.getSelfEntity()
+        let dist = ipadEntity.position(relativeTo: entity).length
+        let spec = camera.model.spec
+
+        cameras[cameras.index(of: camera)].pixelDensity = Double(spec.resolution.0) / Double(camera.fov.fov.h.toRadians * dist)
+    }
+
     func setLensPosition(for fov: FOVEntity) {
         lensesPositions[fov.id] = arView.project(fov.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
     }
 
-    func getCamera(for id: UInt64) -> CameraInScene? {
-        cameras.first(where: { $0.anchor.id == id })
-    }
 
     func toggleCone(for camera: CameraInScene) {
         let index = cameras.index(of: camera)
         cameras[index].toggleFOVCone()
     }
-
-    init(arView: ARView) {
-        self.arView = arView
-    }
 }
 
 extension Array where Element == CameraInScene {
     func index(of camera: CameraInScene) -> Int {
-        self.firstIndex(where: { $0.id == camera.id })!
+        firstIndex(where: { $0.id == camera.id })!
+    }
+}
+
+
+extension ARView {
+    func getSelfEntity() -> Entity {
+        let entity = Entity()
+        let p = cameraTransform.matrix.columns.3
+        entity.move(to: Transform(translation: [p.x, p.y, p.z]), relativeTo: nil)
+        return entity
     }
 }

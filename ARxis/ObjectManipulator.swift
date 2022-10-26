@@ -36,7 +36,7 @@ struct ArrowView: View {
                         case "arrow.up": onArrowUp?()
                         case "arrow.left": onArrowLeft?()
                         case "arrow.right": onArrowRight?()
-                        case "arrow.down": nArrowDown?()
+                        case "arrow.down": onArrowDown?()
                         default: break
                         }
                     }, label: {

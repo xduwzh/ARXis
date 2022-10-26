@@ -16,6 +16,7 @@ class ARXisSystem: System {
     func update(context: SceneUpdateContext) {
         context.scene.performQuery(Self.query).compactMap { $0 as? FOVEntity }.forEach { fov in
             fov.sceneManager.setSeesIpad(for: fov)
+            fov.sceneManager.setPixelDensity(for: fov)
             fov.sceneManager.setLensPosition(for: fov)
 //            context.scene.subscribe(to: <#T##Event.Protocol#>, <#T##handler: (Event) -> Void##(Event) -> Void#>) TODO: zrobic
         }

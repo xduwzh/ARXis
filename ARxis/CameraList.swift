@@ -21,8 +21,12 @@ struct CameraList: View {
                             .frame(width: 100, height: 100)
                             .cornerRadius(10)
                             .padding()
-                        Image(systemName: camera.seesIpad ? "checkmark.square" : "x.square")
-                            .foregroundColor(camera.seesIpad ? .green : .red)
+                        HStack {
+                            Image(systemName: camera.seesIpad ? "checkmark.square" : "x.square")
+                                .foregroundColor(camera.seesIpad ? .green : .red)
+                            PixelDensityVisualizer(pixelDensity: camera.pixelDensity)
+                                .frame(width: 100, height: 30)
+                        }
                     }
                     .padding()
                     .onTapGesture {
@@ -31,6 +35,6 @@ struct CameraList: View {
                 }
             }
         }
-        .background(Color(white: 0.5, opacity: 0.5))
+            .background(Color(white: 0.5, opacity: 0.5))
     }
 }

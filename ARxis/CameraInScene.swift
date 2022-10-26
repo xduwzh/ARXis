@@ -30,7 +30,9 @@ struct CameraInScene: Identifiable {
     let anchor: AnchorEntity
     let model: CameraModel
     private(set) var fov: FOVEntity
-    var seesIpad: Bool
+
+    var seesIpad: Bool = false
+    var pixelDensity: Double = -1
 
     var movablePart: Entity
     var cameraEntity: Entity
@@ -43,7 +45,6 @@ struct CameraInScene: Identifiable {
         self.anchor = anchor
         self.model = model
         self.fov = fov
-        seesIpad = false
 
         cameraEntity = anchor.children[0]
         movablePart = cameraEntity.children[cameraEntity.children.endIndex - 1]
