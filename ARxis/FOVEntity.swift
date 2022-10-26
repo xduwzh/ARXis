@@ -8,67 +8,67 @@
 import Foundation
 import RealityKit
 
+typealias FOV_T = (v: Float, h: Float)
+
 struct IsFOV: Component {
     let sceneManager: SceneManager
 }
 
 class FOVEntity: Entity, HasModel {
     required init() {}
+
     var sceneManager: SceneManager {
-        self.components[IsFOV.self]!.sceneManager
+        components[IsFOV.self]!.sceneManager
     }
 
     var height: Float = -1
-    var vFOV: Float = -1
-    var hFOV: Float = -1
+    var fov: FOV_T = (v: -1, h: -1)
 
-    init(height: Float, vFOV: Float, hFOV: Float, materials: [Material], sceneManager: SceneManager) {
+    init(height: Float, fov: FOV_T, materials: [Material], sceneManager: SceneManager) {
         super.init()
 
-        let mesh = try! MeshResource.generatePyramid(height: height, horizontalFOV: hFOV, verticalFOV: vFOV)
+        let mesh = try! MeshResource.generatePyramid(height: height, horizontalFOV: fov.h, verticalFOV: fov.v)
 
-        self.model = ModelComponent(mesh: mesh, materials: materials)
-        self.components[IsFOV.self] = IsFOV(sceneManager: sceneManager)
+        model = ModelComponent(mesh: mesh, materials: materials)
+        components[IsFOV.self] = IsFOV(sceneManager: sceneManager)
 
         self.height = height
-        self.vFOV = vFOV
-        self.hFOV = hFOV
-
-        self.createEdges()
+        self.fov = fov
+        createEdges()
     }
 
     private func createEdges() {
-        let x = self.height * tan(self.vFOV.toRadians / 2)
-        let z = self.height * tan(self.hFOV.toRadians / 2)
+        let x = height * tan(fov.v.toRadians / 2)
+        let z = height * tan(fov.h.toRadians / 2)
 
         var edges: [Entity] = []
-        let depth = length(SIMD3([x, self.height, z]))
-        for _ in 0 ..< 4 {
+        let depth = length(SIMD3([x, height, z]))
+        for _ in 0..<4 {
             edges.append(createBox(depth: depth))
         }
 
         edges[0].look(
-            at: SIMD3([x, self.height, z]).normalised,
-            from: SIMD3([x / 2, self.height / 2, z / 2]),
-            relativeTo: self
+                at: SIMD3([x, height, z]).normalised,
+                from: SIMD3([x / 2, height / 2, z / 2]),
+                relativeTo: self
         )
         edges[1].look(
-            at: SIMD3([x, self.height, -z]).normalised,
-            from: SIMD3([x / 2, self.height / 2, -z / 2]),
-            relativeTo: self
+                at: SIMD3([x, height, -z]).normalised,
+                from: SIMD3([x / 2, height / 2, -z / 2]),
+                relativeTo: self
         )
         edges[2].look(
-            at: SIMD3([-x, self.height, z]).normalised,
-            from: SIMD3([-x / 2, self.height / 2, z / 2]),
-            relativeTo: self
+                at: SIMD3([-x, height, z]).normalised,
+                from: SIMD3([-x / 2, height / 2, z / 2]),
+                relativeTo: self
         )
         edges[3].look(
-            at: SIMD3([-x, self.height, -z]).normalised,
-            from: SIMD3([-x / 2, self.height / 2, -z / 2]),
-            relativeTo: self
+                at: SIMD3([-x, height, -z]).normalised,
+                from: SIMD3([-x / 2, height / 2, -z / 2]),
+                relativeTo: self
         )
 
-        self.children.append(contentsOf: edges)
+        children.append(contentsOf: edges)
     }
 }
 

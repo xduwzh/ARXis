@@ -11,6 +11,7 @@
 		3A2DA1D028F46FB5002C422A /* FloatingPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2DA1CF28F46FB5002C422A /* FloatingPopover.swift */; };
 		3A445EB928D9FB75004733F5 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A445EB828D9FB75004733F5 /* extensions.swift */; };
 		3A445EBB28D9FF5F004733F5 /* SceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A445EBA28D9FF5F004733F5 /* SceneManager.swift */; };
+		3A4EB2622909204800D6E36B /* TechnicalSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4EB2612909204800D6E36B /* TechnicalSpec.swift */; };
 		3A610E1928D9F68E00E5B77B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A610E1828D9F68E00E5B77B /* AppDelegate.swift */; };
 		3A610E1B28D9F68E00E5B77B /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A610E1A28D9F68E00E5B77B /* MainView.swift */; };
 		3A610E1D28D9F68E00E5B77B /* Experience.rcproject in Sources */ = {isa = PBXBuildFile; fileRef = 3A610E1C28D9F68E00E5B77B /* Experience.rcproject */; };
@@ -22,6 +23,7 @@
 		3A84841628E32D2C00736A4C /* CameraInScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841528E32D2C00736A4C /* CameraInScene.swift */; };
 		3A84841828E3471200736A4C /* MeshResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841728E3471200736A4C /* MeshResource.swift */; };
 		3A84841A28E34E4900736A4C /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 3A84841928E34E4900736A4C /* shaders.metal */; };
+		3AA9EBA729087EF100411483 /* PixelDensityVisualizator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA9EBA629087EF100411483 /* PixelDensityVisualizator.swift */; };
 		3AAE137228EDCBDF003F06BE /* ECS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAE137128EDCBDF003F06BE /* ECS.swift */; };
 		3AAE137728EDCDA9003F06BE /* FOVEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAE137628EDCDA9003F06BE /* FOVEntity.swift */; };
 		3ADB8F7A28EC77F500054812 /* AXIS_P1375-E123.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 3ADB8F7828EC77F500054812 /* AXIS_P1375-E123.usdz */; };
@@ -34,6 +36,7 @@
 		3A2DA1CF28F46FB5002C422A /* FloatingPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingPopover.swift; sourceTree = "<group>"; };
 		3A445EB828D9FB75004733F5 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		3A445EBA28D9FF5F004733F5 /* SceneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneManager.swift; sourceTree = "<group>"; };
+		3A4EB2612909204800D6E36B /* TechnicalSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TechnicalSpec.swift; sourceTree = "<group>"; };
 		3A610E1528D9F68E00E5B77B /* ARXis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARXis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A610E1828D9F68E00E5B77B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3A610E1A28D9F68E00E5B77B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -46,6 +49,7 @@
 		3A84841528E32D2C00736A4C /* CameraInScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraInScene.swift; sourceTree = "<group>"; };
 		3A84841728E3471200736A4C /* MeshResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshResource.swift; sourceTree = "<group>"; };
 		3A84841928E34E4900736A4C /* shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shaders.metal; sourceTree = "<group>"; };
+		3AA9EBA629087EF100411483 /* PixelDensityVisualizator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelDensityVisualizator.swift; sourceTree = "<group>"; };
 		3AAE137128EDCBDF003F06BE /* ECS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECS.swift; sourceTree = "<group>"; };
 		3AAE137628EDCDA9003F06BE /* FOVEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FOVEntity.swift; sourceTree = "<group>"; };
 		3ADB8F7828EC77F500054812 /* AXIS_P1375-E123.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "AXIS_P1375-E123.usdz"; sourceTree = "<group>"; };
@@ -101,6 +105,7 @@
 				3ADB8F7C28EC875800054812 /* CameraList.swift */,
 				3AAE137128EDCBDF003F06BE /* ECS.swift */,
 				3AAE137628EDCDA9003F06BE /* FOVEntity.swift */,
+				3AA9EBA629087EF100411483 /* PixelDensityVisualizator.swift */,
 			);
 			path = ARxis;
 			sourceTree = "<group>";
@@ -119,6 +124,7 @@
 				3A1A4C8928E310F4003C9B43 /* TappableView.swift */,
 				3A445EB828D9FB75004733F5 /* extensions.swift */,
 				3A2DA1CF28F46FB5002C422A /* FloatingPopover.swift */,
+				3A4EB2612909204800D6E36B /* TechnicalSpec.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -197,6 +203,7 @@
 			files = (
 				3A445EB928D9FB75004733F5 /* extensions.swift in Sources */,
 				3A610E2928D9F6B800E5B77B /* CameraPicker.swift in Sources */,
+				3AA9EBA729087EF100411483 /* PixelDensityVisualizator.swift in Sources */,
 				3A84841828E3471200736A4C /* MeshResource.swift in Sources */,
 				3A610E1B28D9F68E00E5B77B /* MainView.swift in Sources */,
 				3A2DA1D028F46FB5002C422A /* FloatingPopover.swift in Sources */,
@@ -204,6 +211,7 @@
 				3A74573228F7021C005E2F66 /* CameraModel.swift in Sources */,
 				3ADB8F7D28EC875800054812 /* CameraList.swift in Sources */,
 				3A610E1928D9F68E00E5B77B /* AppDelegate.swift in Sources */,
+				3A4EB2622909204800D6E36B /* TechnicalSpec.swift in Sources */,
 				3A445EBB28D9FF5F004733F5 /* SceneManager.swift in Sources */,
 				3AAE137228EDCBDF003F06BE /* ECS.swift in Sources */,
 				3A84841428E3276900736A4C /* ObjectManipulator.swift in Sources */,

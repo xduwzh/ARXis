@@ -28,25 +28,25 @@ struct CameraInScene: Identifiable {
     }
 
     let anchor: AnchorEntity
-    let cameraModelName: String
+    let model: CameraModel
     private(set) var fov: FOVEntity
     var seesIpad: Bool
 
     var movablePart: Entity
     var cameraEntity: Entity
 
-    init(anchor: AnchorEntity, cameraModelName: String, fov: FOVEntity) {
-        self.anchor = anchor
-        self.cameraModelName = cameraModelName
-        self.fov = fov
-        self.seesIpad = false
-        
-        self.cameraEntity = anchor.children[0]
-        self.movablePart = self.cameraEntity.children[self.cameraEntity.children.endIndex - 1]
-    }
-
     var coneActive: Bool {
         fov.isActive
+    }
+
+    init(anchor: AnchorEntity, model: CameraModel, fov: FOVEntity) {
+        self.anchor = anchor
+        self.model = model
+        self.fov = fov
+        seesIpad = false
+
+        cameraEntity = anchor.children[0]
+        movablePart = cameraEntity.children[cameraEntity.children.endIndex - 1]
     }
 
     func toggleFOVCone() {
@@ -56,13 +56,13 @@ struct CameraInScene: Identifiable {
     func rotate(angle: Float, axis: Axis) {
         movablePart.transform.rotation *= simd_quatf(angle: angle, axis: axis.simd)
     }
-    
+
     mutating func replaceFov(_ newFov: FOVEntity) {
-        if let fovParent = self.fov.parent {
-            self.fov.removeFromParent()
+        if let fovParent = fov.parent {
+            fov.removeFromParent()
             fovParent.addChild(newFov)
-            self.fov = newFov
+            fov = newFov
         }
     }
-    
+
 }

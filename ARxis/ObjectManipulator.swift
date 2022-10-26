@@ -9,38 +9,39 @@ import SwiftUI
 struct ArrowView: View {
     static let width: CGFloat = 20
     static let spacing: CGFloat = 7
-    
+
     let columns = [
         GridItem(.fixed(ArrowView.width)),
         GridItem(.fixed(ArrowView.width)),
         GridItem(.fixed(ArrowView.width)),
     ]
-    
+
     let icons = [
         nil, "arrow.up", nil,
         "arrow.left", nil, "arrow.right",
         nil, "arrow.down", nil,
     ]
-    
+
     var onArrowUp: (() -> Void)?
     var onArrowLeft: (() -> Void)?
     var onArrowRight: (() -> Void)?
     var onArrowDown: (() -> Void)?
-    
+
     var body: some View {
         LazyVGrid(columns: columns, spacing: ArrowView.spacing) {
-            ForEach(0 ..< 9) { index in
+            ForEach(0..<9) { index in
                 if let icon = icons[index] {
                     Button(action: {
                         switch icon {
-                            case "arrow.up": self.onArrowUp?()
-                            case "arrow.left": self.onArrowLeft?()
-                            case "arrow.right": self.onArrowRight?()
-                            case "arrow.down": self.onArrowDown?()
-                            default: break
+                        case "arrow.up": onArrowUp?()
+                        case "arrow.left": onArrowLeft?()
+                        case "arrow.right": onArrowRight?()
+                        case "arrow.down": nArrowDown?()
+                        default: break
                         }
                     }, label: {
-                        Image(systemName: icon)}
+                        Image(systemName: icon)
+                    }
                     )
                 } else {
                     Image(systemName: "square").opacity(0)
@@ -58,10 +59,10 @@ struct ObjectManipulator: View {
     var onTrashClick: () -> Void
     var onConeClick: () -> Void
     var onSliderValueChanged: (Float) -> Void
-    
+
     @State var fovActive: Bool
     @State var fovHeight: Float = 1
-    
+
     var body: some View {
         VStack {
             HStack {

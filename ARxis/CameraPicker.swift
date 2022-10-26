@@ -11,13 +11,16 @@ struct CameraPicker: View {
     var body: some View {
         VStack {
             ForEach(CAMERAS) { camera in
-                Image(uiImage: camera.image)
-                    .resizable()
-                    .frame(width: 100, height: 100)
-                    .cornerRadius(10)
-                    .onDrag {
-                        return NSItemProvider(object: camera.id as NSString)
-                    }
+                VStack {
+                    Image(uiImage: camera.image)
+                        .resizable()
+                        .frame(width: 100, height: 100)
+                        .cornerRadius(10)
+                    Text(camera.name)
+                }
+                .onDrag {
+                    NSItemProvider(object: camera.id as NSString)
+                }
             }
         }
         .padding()

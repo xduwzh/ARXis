@@ -9,7 +9,8 @@ import ARKit
 import RealityKit
 import SwiftUI
 
-extension ARView: ObservableObject {}
+extension ARView: ObservableObject {
+}
 
 struct MainView: View {
     @ObservedObject var sceneManager: SceneManager
@@ -45,7 +46,6 @@ struct MainView: View {
                                 onTrashClick: {
                                     sceneManager.removeCamera(selectedCamera!)
                                     selectedCamera = nil
-
                                 },
                                 onConeClick: { sceneManager.toggleCone(for: selectedCamera!) },
                                 onSliderValueChanged: { newHeight in sceneManager.setFovHeight(of: selectedCamera!, to: newHeight) },
