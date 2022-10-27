@@ -63,6 +63,9 @@ struct ObjectManipulator: View {
     @State var fovActive: Bool
     @State var fovHeight: Float = 1
 
+    var fovHeightRange: ClosedRange<Float> = 0.1...5
+
+
     var body: some View {
         VStack {
             HStack {
@@ -90,20 +93,23 @@ struct ObjectManipulator: View {
                     })
                 }.padding()
             }
-            
-            Slider(
-                value: $fovHeight,
-                in: 0.1...5
-            ) {
-                Text("FOV Height (m)") // MARK: TODO - change
-            } minimumValueLabel: {
-                Text("0")
-            } maximumValueLabel: {
-                Text("\(Float.infinity)")
+
+
+            VStack(alignment: .leading, spacing: 0) {
+                Text("FOV Height")
+                        .font(.system(size: 15))
+                        .padding(.leading)
+                Slider(value: $fovHeight, in: fovHeightRange) {
+                } minimumValueLabel: {
+                    Text(String(format: "%.2f", fovHeightRange.lowerBound))
+                } maximumValueLabel: {
+                    Text(String(format: "%.2f", fovHeightRange.upperBound))
+                }
+                .onChange(of: fovHeight, perform: onSliderValueChanged)
+                .padding()
             }
-            .onChange(of: fovHeight, perform: onSliderValueChanged)
-            .padding()
-            
+
+
         }
         .frame(width: 200, height: 200)
         .background(RadialGradient(gradient: Gradient(colors: gradientColors), center: .center, startRadius: 70, endRadius: 10))
@@ -122,8 +128,6 @@ func doNothing2(_: Float) {}
 
 struct ObjectManipulator_Previews: PreviewProvider {
     static var previews: some View {
-        
-
         ObjectManipulator(
             onArrowUp: doNothing,
             onArrowLeft: doNothing,

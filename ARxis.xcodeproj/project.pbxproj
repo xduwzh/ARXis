@@ -29,6 +29,7 @@
 		3ADB8F7A28EC77F500054812 /* AXIS_P1375-E123.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 3ADB8F7828EC77F500054812 /* AXIS_P1375-E123.usdz */; };
 		3ADB8F7B28EC77F500054812 /* AXIS-M4216_LV.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 3ADB8F7928EC77F500054812 /* AXIS-M4216_LV.usdz */; };
 		3ADB8F7D28EC875800054812 /* CameraList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADB8F7C28EC875800054812 /* CameraList.swift */; };
+		3ADF94C7290A67090025D8FF /* AXIS_P1375-E.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 3ADF94C6290A67090025D8FF /* AXIS_P1375-E.usdz */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,8 @@
 		3ADB8F7828EC77F500054812 /* AXIS_P1375-E123.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "AXIS_P1375-E123.usdz"; sourceTree = "<group>"; };
 		3ADB8F7928EC77F500054812 /* AXIS-M4216_LV.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "AXIS-M4216_LV.usdz"; sourceTree = "<group>"; };
 		3ADB8F7C28EC875800054812 /* CameraList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraList.swift; sourceTree = "<group>"; };
+		3ADF94C5290A65CE0025D8FF /* AXIS_P1375-Edupa.usdc */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AXIS_P1375-Edupa.usdc"; sourceTree = "<group>"; };
+		3ADF94C6290A67090025D8FF /* AXIS_P1375-E.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "AXIS_P1375-E.usdz"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +96,8 @@
 				3A610E1828D9F68E00E5B77B /* AppDelegate.swift */,
 				3ADB8F7828EC77F500054812 /* AXIS_P1375-E123.usdz */,
 				3ADB8F7928EC77F500054812 /* AXIS-M4216_LV.usdz */,
+				3ADF94C5290A65CE0025D8FF /* AXIS_P1375-Edupa.usdc */,
+				3ADF94C6290A67090025D8FF /* AXIS_P1375-E.usdz */,
 				3A610E2028D9F68F00E5B77B /* Preview Content */,
 				3AAE137328EDCC8A003F06BE /* Utils */,
 				3A610E1A28D9F68E00E5B77B /* MainView.swift */,
@@ -187,6 +192,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3ADF94C7290A67090025D8FF /* AXIS_P1375-E.usdz in Resources */,
 				3A610E2228D9F68F00E5B77B /* Preview Assets.xcassets in Resources */,
 				3A610E1F28D9F68F00E5B77B /* Assets.xcassets in Resources */,
 				3ADB8F7A28EC77F500054812 /* AXIS_P1375-E123.usdz in Resources */,

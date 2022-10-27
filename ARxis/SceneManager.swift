@@ -20,7 +20,7 @@ class SceneManager: ObservableObject {
     let arView: ARView
     private let device = MTLCreateSystemDefaultDevice()!
     private var library: MTLLibrary {
-        return device.makeDefaultLibrary()!
+        device.makeDefaultLibrary()!
     }
 
     @Published var cameras: [CameraInScene] = []
@@ -138,7 +138,9 @@ class SceneManager: ObservableObject {
         let dist = ipadEntity.position(relativeTo: entity).length
         let spec = camera.model.spec
 
-        cameras[cameras.index(of: camera)].pixelDensity = Double(spec.resolution.0) / Double(camera.fov.fov.h.toRadians * dist)
+
+        // TODO fov.v is really fov.h
+        cameras[cameras.index(of: camera)].pixelDensity = (Double(spec.resolution.0) / Double(camera.fov.fov.v.toRadians * dist)) / 5.0
     }
 
     func setLensPosition(for fov: FOVEntity) {

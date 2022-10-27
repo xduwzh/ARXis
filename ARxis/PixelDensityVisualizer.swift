@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct PixelDensitySlider: View {
-    @Binding var value: Double
+    var value: Double
     var bounds: ClosedRange<Float> = 0...1
     var separators: [Double] = []
 
@@ -29,7 +29,7 @@ struct PixelDensitySlider: View {
     func getSeparators(pointerDiameter: CGFloat, width: CGFloat) -> some View {
         ForEach(separators, id: \.self) { separator in
             Rectangle()
-                .frame(width: .pi)
+                .frame(width: 1.5)
                 .offset(x: pointerDiameter/2 + separator * (width - pointerDiameter) / 100 - width / 2)
         }
     }
@@ -64,8 +64,11 @@ struct PixelDensitySlider: View {
 }
 
 struct PixelDensityVisualizer: View {
-    //    https://www.axis.com/learning/web-articles/perfect-pixel-count/pixel-density
-    @State var pixelDensity: Double
+    // https://www.axis.com/learning/web-articles/perfect-pixel-count/pixel-density
+    var pixelDensity: Double
+
+    static fileprivate let DARK_GREEN = Color.init(red: 2/255, green: 138/255, blue: 15/255)
+
 
     func calcColor(_ pixelDensity: Double) -> Color {
         switch pixelDensity {
@@ -75,16 +78,18 @@ struct PixelDensityVisualizer: View {
                 return .orange
             case _ where pixelDensity < 40:
                 return .yellow
-            default:
+            case _ where pixelDensity < 80:
                 return .green
+            default:
+                return PixelDensityVisualizer.DARK_GREEN
         }
     }
     
     var body: some View {
         VStack{
-            Text("Pixel density: \(pixelDensity)")
+            Text("Pixel density: \(Int(pixelDensity))")
                 .font(.system(size: 8))
-            PixelDensitySlider(value: $pixelDensity, separators: [4, 20, 40], calculateColorFunc: calcColor)
+            PixelDensitySlider(value: pixelDensity, separators: [4, 20, 40, 80], calculateColorFunc: calcColor)
         }
 
     }
