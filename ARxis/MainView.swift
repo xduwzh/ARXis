@@ -17,6 +17,8 @@ struct MainView: View {
     @EnvironmentObject private var arView: ARView
     @State private var selectedCamera: CameraInScene?
 
+    @State var isMeshOn: Bool = true
+
     var body: some View {
         HStack {
             ZStack(alignment: .bottomLeading) {
@@ -62,18 +64,33 @@ struct MainView: View {
                         }
                     }
                 }
-                CameraList(cameras: sceneManager.cameras) { camera in
+                CameraList(cameras: sceneManager.cameras, selectedCameraId: selectedCamera?.id) { camera in
                     selectedCamera = camera
                 }
                 .padding()
             }
-            CameraPicker()
+            VStack {
+                VStack(alignment: .center) {
+                    Text("Mesh visibility")
+                    Toggle("Mesh visibility", isOn: $isMeshOn)
+                        .labelsHidden()
+                        .onChange(of: isMeshOn) { value in
+                            arView.toggleMesh(isOn: !value)
+                        }
+                }
+                .padding()
+                Spacer()
+                CameraPicker()
+            }
+                .frame(maxWidth: 150)
         }
     }
 }
 
 struct ARViewContainer: UIViewRepresentable {
     @EnvironmentObject private var arView: ARView
+    var showsMesh = true
+
 
     func makeUIView(context: Context) -> ARView {
         arView.automaticallyConfigureSession = false
@@ -90,4 +107,15 @@ struct ARViewContainer: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: ARView, context: Context) {}
+}
+
+extension ARView {
+    func toggleMesh(isOn: Bool) {
+        if isOn {
+            debugOptions.remove(.showSceneUnderstanding)
+        } else {
+            debugOptions.insert(.showSceneUnderstanding)
+        }
+    }
+
 }

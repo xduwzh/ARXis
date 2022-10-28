@@ -37,11 +37,14 @@ class SceneManager: ObservableObject {
         let fov = createFOV(height: 0.4, fov: camera.defaultFOV, culling: .none)
         let coneAnchor = Entity()
 
+//        coneAnchor.orientation = simd_quatf(angle: .pi/2, axis: [1, 0, 0])
+
         coneAnchor.addChild(fov)
         anchor.addChild(object)
+//        object.findEntity(named: camera.lensPart)!.addChild(coneAnchor)
         object.addChild(coneAnchor)
 
-        arView.installGestures(.translation, for: object)
+//        arView.installGestures(.translation, for: object)
 
         arView.scene.anchors.append(anchor)
         cameras.append(CameraInScene(anchor: anchor, model: camera, fov: fov))
@@ -67,6 +70,12 @@ class SceneManager: ObservableObject {
     func setFovHeight(of camera: CameraInScene, to height: Float) {
         let index = cameras.index(of: camera)
         cameras[index].replaceFov(createFOV(height: height, fov: camera.fov.fov, culling: .none, materials: camera.fov.model?.materials))
+    }
+
+    func setDistanceToFloor(for entity: FOVEntity) {
+        guard let camera = getCamera(for: entity.anchor!.id), camera.distanceToFloor != nil else {
+            return
+        }
     }
 
     func getCamera(at point: CGPoint) -> CameraInScene? {

@@ -33,6 +33,8 @@ struct CameraInScene: Identifiable {
 
     var seesIpad: Bool = false
     var pixelDensity: Double = -1
+    var distanceToFloor: Double? = nil
+
 
     var movablePart: Entity
     var cameraEntity: Entity
@@ -48,6 +50,7 @@ struct CameraInScene: Identifiable {
 
         cameraEntity = anchor.children[0]
         movablePart = cameraEntity.children[cameraEntity.children.endIndex - 1]
+//        movablePart = cameraEntity.findEntity(named: model.rotatablePart)!
     }
 
     func toggleFOVCone() {

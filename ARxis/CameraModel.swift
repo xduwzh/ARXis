@@ -20,14 +20,17 @@ struct CameraModel: Identifiable {
     let spec: TechnicalSpec
 
     let rotatablePart: String
+    let lensPart: String
     
     var defaultFOV: FOV_T {
         (v: spec.vFOV.upperBound, h: spec.hFOV.upperBound)
     }
 
-    fileprivate init(name: String, rotatablePart: String, spec: TechnicalSpec, scale: SIMD3<Float>? = nil, orientation: simd_quatf? = nil) {
+    fileprivate init(name: String, rotatablePart: String, lensPart: String, spec: TechnicalSpec, scale: SIMD3<Float>? = nil, orientation: simd_quatf? = nil) {
         self.name = name
         self.spec = spec
+        self.rotatablePart = rotatablePart
+        self.lensPart = lensPart
 
         let entity = try! Entity.load(named: "\(name)")
         if let scale = scale {
@@ -59,6 +62,8 @@ struct CameraModel: Identifiable {
 let CAMERAS: [CameraModel] = [
     CameraModel(
             name: "AXIS-M4216_LV",
+            rotatablePart: "Camera_objective",
+            lensPart: "Camera_objective",
             spec: TechnicalSpec(
                     resolution: (2304, 1728),
                     vFOV: 45...100,
@@ -68,7 +73,9 @@ let CAMERAS: [CameraModel] = [
             orientation: simd_quatf(angle: -.pi/2, axis: [1, 0, 0])
     ),
     CameraModel(
-            name: "AXIS_P1375-E", // TODO: 123 at the end of name
+            name: "AXIS_P1375-E",
+            rotatablePart: "camera_rotator",
+            lensPart: "Camera_objective",
             spec: TechnicalSpec(
                     resolution: (1920, 1080),
                     vFOV: 42...107,
