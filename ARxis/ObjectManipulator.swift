@@ -112,8 +112,6 @@ struct ObjectManipulator: View {
 
         }
         .frame(width: 200, height: 200)
-        .background(RadialGradient(gradient: Gradient(colors: gradientColors), center: .center, startRadius: 70, endRadius: 10))
-        .cornerRadius(20)
     }
     
     let gradientColors = [

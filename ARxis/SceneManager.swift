@@ -58,8 +58,8 @@ class SceneManager: ObservableObject {
         let material = SimpleMaterial(color: .random(alpha: 0.6), isMetallic: false)
 
         var custom1 = try! CustomMaterial(
-                from: material,
-                geometryModifier: .init(named: "emptyGeometryModifier", in: library)
+            from: material,
+            geometryModifier: .init(named: "emptyGeometryModifier", in: library)
         )
         custom1.faceCulling = culling
         custom1.baseColor = .init(tint: material.color.tint)
@@ -147,8 +147,7 @@ class SceneManager: ObservableObject {
         let dist = ipadEntity.position(relativeTo: entity).length
         let spec = camera.model.spec
 
-
-        // TODO fov.v is really fov.h
+        // TODO: fov.v is really fov.h
         cameras[cameras.index(of: camera)].pixelDensity = (Double(spec.resolution.0) / Double(camera.fov.fov.v.toRadians * dist)) / 5.0
     }
 
@@ -168,7 +167,6 @@ extension Array where Element == CameraInScene {
         firstIndex(where: { $0.id == camera.id })!
     }
 }
-
 
 extension ARView {
     func getSelfEntity() -> Entity {

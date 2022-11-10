@@ -31,16 +31,15 @@ struct CameraList: View {
                                 .padding()
 
                         }
-                        .frame(maxWidth: 105)
 
                         HStack {
                             if camera.seesIpad {
                                 PixelDensityVisualizer(pixelDensity: camera.pixelDensity)
-                                    .frame(width: 100, height: 30)
                             } else {
                                 Image(systemName:"x.square").foregroundColor(.red)
                             }
                         }
+                        .frame(width: 100, height: 30)
                     }
 
                     .padding()
@@ -50,6 +49,5 @@ struct CameraList: View {
                 }
             }
         }
-            .background(Color(white: 0.5, opacity: 0.5))
     }
 }
