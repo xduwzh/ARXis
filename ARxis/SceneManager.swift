@@ -16,6 +16,11 @@ fileprivate extension UIColor {
     }
 }
 
+struct LensPosition {
+    let pos: CGPoint
+    let isInFront: Bool
+}
+
 class SceneManager: ObservableObject {
     let arView: ARView
     private let device = MTLCreateSystemDefaultDevice()!
@@ -24,7 +29,7 @@ class SceneManager: ObservableObject {
     }
 
     @Published var cameras: [CameraInScene] = []
-    @Published var lensesPositions: [UInt64?: CGPoint] = [:]
+    @Published var lensesPositions: [UInt64?: LensPosition] = [:]
 
     init(arView: ARView) {
         self.arView = arView
@@ -152,13 +157,43 @@ class SceneManager: ObservableObject {
     }
 
     func setLensPosition(for fov: FOVEntity) {
-        lensesPositions[fov.id] = arView.project(fov.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
+        
+//        let projection = arView.project(fov.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
+        let relPos = fov.position(relativeTo: arView.getSelfEntity())
+        debugPrint(relPos)
+        
+        let lensPos = LensPosition(
+            pos: arView.project(fov.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1),
+            isInFront: relPos.z < 0
+        )
+        
+        lensesPositions[fov.id] = lensPos
     }
 
 
     func toggleCone(for camera: CameraInScene) {
         let index = cameras.index(of: camera)
         cameras[index].toggleFOVCone()
+    }
+    
+    func placeCamera(ofType cameraModelId: String) {
+        guard let (camPos, camDir) = self.getCamVector() else {
+            return
+        }
+        let rcQuery = ARRaycastQuery(
+            origin: camPos, direction: camDir,
+            allowing: .estimatedPlane, alignment: .any
+        )
+        let result = self.arView.session.raycast(rcQuery)
+        if let hit = result.first, let camera = CAMERAS.first(where: { $0.id == cameraModelId }) {
+            self.placeCamera(camera, transform: hit.worldTransform)
+        }
+    }
+    
+    internal func getCamVector() -> (position: SIMD3<Float>, direciton: SIMD3<Float>)? {
+        let camTransform = self.arView.cameraTransform
+        let camDirection = camTransform.matrix.columns.2
+        return (camTransform.translation, -[camDirection.x, camDirection.y, camDirection.z])
     }
 }
 
@@ -173,6 +208,7 @@ extension ARView {
         let entity = Entity()
         let p = cameraTransform.matrix.columns.3
         entity.move(to: Transform(translation: [p.x, p.y, p.z]), relativeTo: nil)
+        entity.transform.rotation = cameraTransform.rotation
         return entity
     }
 }

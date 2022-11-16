@@ -12,37 +12,40 @@ import SwiftUI
 extension ARView: ObservableObject {
 }
 
+extension CGSize {
+    static func * (lhs: CGSize, rhs: Double) -> CGSize {
+        return CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
+    }
+}
+
+func between(x: Double, lower: Double, upper: Double) -> Bool {
+    if x > lower && x < upper {
+        return true
+    }
+    return false
+}
+
 struct MainView: View {
     @ObservedObject var sceneManager: SceneManager
     @EnvironmentObject private var arView: ARView
     @State private var selectedCamera: CameraInScene?
 
-    @State var isMeshOn: Bool = true
+    @State var isMeshOn: Bool = false
 
     var body: some View {
         VStack {
             HStack {
-
                 GeometryReader { proxy in
                     ZStack {
                         ARViewContainer()
-                        .edgesIgnoringSafeArea(.all)
-                        .onDrop(of: [.utf8PlainText], isTargeted: nil) { providers, location in
-                            providers.loadFirstObject(ofType: String.self) { cameraID in
-                                let result = arView.raycast(from: location, allowing: .estimatedPlane, alignment: .any)
-                                if let hit = result.first, let camera = CAMERAS.first(where: { $0.id == cameraID }) {
-                                    withAnimation(.linear(duration: 0.3)) {
-                                        sceneManager.placeCamera(camera, transform: hit.worldTransform)
-                                    }
-                                }
+                            .edgesIgnoringSafeArea(.all)
+                            .onTap { point in
+                                selectedCamera = sceneManager.getCamera(at: point)
                             }
-                        }
-                        .onTap { point in
-                            selectedCamera = sceneManager.getCamera(at: point)
-                        }
                     }
 
-                    if let selectedCamera = selectedCamera {
+                    
+                    if let selectedCamera = selectedCamera, !between(x: sceneManager.lensesPositions[selectedCamera.fov.id]!.pos.x, lower: 0, upper: proxy.size.width) || !between(x: sceneManager.lensesPositions[selectedCamera.fov.id]!.pos.y, lower: 0, upper: proxy.size.height) {
                         let vec = getVector(for: selectedCamera, dimensions: proxy.size)
                         let angle = getRotationAngle(for: selectedCamera, dimensions: proxy.size)
                         Image(systemName: "arrow.right")
@@ -50,21 +53,18 @@ struct MainView: View {
                             .frame(width: 50, height: 50)
                             .rotationEffect(.init(radians: angle))
                             .offset(x: proxy.size.width / 2, y: proxy.size.height / 2)
-                            .offset(getVectorOffset(forGamma: angle, forVec: vec, dimensions: proxy.size))
-//                    Image(systemName: "arrow.right")
-//                        .frame(width: 50, height: 50)
+                            .offset(getVectorOffset(forGamma: angle, forVec: vec, dimensions: proxy.size * 0.7))
                     }
-
                 }
 
                 VStack {
                     Text("Mesh visibility")
                     Toggle("Mesh visibility", isOn: $isMeshOn)
-                    .labelsHidden()
-                    .onChange(of: isMeshOn) { value in
-                        arView.toggleMesh(isOn: !value)
-                    }
-                    CameraPicker()
+                        .labelsHidden()
+                        .onChange(of: isMeshOn) { value in
+                            arView.toggleMesh(isOn: !value)
+                        }
+                    CameraPicker(onCameraTap: self.sceneManager.placeCamera)
                 }
             }
             .frame(minHeight: 750)
@@ -103,8 +103,12 @@ struct MainView: View {
         let w = dimensions.width
         let h = dimensions.height
 
-        let pos = sceneManager.lensesPositions[camera.fov.id]!
-        let vec = (SIMD2(x: pos.x, y: pos.y) - SIMD2(x: w / 2, y: h / 2))
+        let pos = sceneManager.lensesPositions[camera.fov.id]!.pos
+        var xx: SIMD2<Double> = SIMD2(x: pos.x, y: pos.y)
+        if !sceneManager.lensesPositions[camera.fov.id]!.isInFront {
+            xx *= -1
+        }
+        let vec = (xx - SIMD2(x: w / 2, y: h / 2))
         return normalize(vec)
     }
 
@@ -112,13 +116,15 @@ struct MainView: View {
         let w = dimensions.width
         let h = dimensions.height
 
-        let pos = sceneManager.lensesPositions[camera.fov.id]!
-        let vec = (SIMD2(x: pos.x, y: pos.y) - SIMD2(x: w / 2, y: h / 2))
+        let pos = sceneManager.lensesPositions[camera.fov.id]!.pos
+        var xx: SIMD2<Double> = SIMD2(x: pos.x, y: pos.y)
+        if !sceneManager.lensesPositions[camera.fov.id]!.isInFront {
+            xx *= -1
+        }
+        let vec = (xx - SIMD2(x: w / 2, y: h / 2))
         let angle = acos(dot(normalize(vec), SIMD2(x: 1, y: 0)))
 
-        debugPrint(angle * 180 / .pi)
         return pos.y > h / 2 ? angle : 2 * .pi - angle
-
     }
 
     func getVectorOffset(forGamma gamma: Double, forVec vec: SIMD2<Double>, dimensions: CGSize) -> CGSize {
@@ -129,20 +135,18 @@ struct MainView: View {
         let alpha = atan(h / w)
         let diagOver2 = sqrt(w * w + h * h) / 2
 
+        let finalGamma = gamma < 2 * .pi - alpha ? gamma : gamma - 2 * .pi
+
         var length = 0.0
-        switch gamma {
-            case alpha ... .pi - alpha:
-            debugPrint(1)
-            length = h / 2 + (diagOver2 - h/2) * (gamma - .pi/2) / (.pi/2 - alpha)
-            case .pi + alpha ... 2 * .pi - alpha:
-            debugPrint(2)
-            length = h / 2 + (diagOver2 - h/2) * (gamma - .pi * 3/2) / (.pi/2 - alpha)
-            case -alpha ... alpha:
-            debugPrint(3)
-            length = w/2 + (diagOver2 - w/2) * (gamma / alpha)
-            case .pi - alpha ... .pi + alpha:
-            debugPrint(4)
-            length = w/2 + (diagOver2 - w/2) * ((gamma - .pi) / alpha)
+        switch finalGamma {
+        case alpha ... .pi - alpha:
+            length = h / 2 + abs((diagOver2 - h / 2) * (finalGamma - .pi / 2) / (.pi / 2 - alpha))
+        case .pi + alpha ... 2 * .pi - alpha:
+            length = h / 2 + abs((diagOver2 - h / 2) * (finalGamma - .pi * 3 / 2) / (.pi / 2 - alpha))
+        case -alpha ... alpha:
+            length = w / 2 + abs((diagOver2 - w / 2) * (finalGamma / alpha))
+        case .pi - alpha ... .pi + alpha:
+            length = w / 2 + abs((diagOver2 - w / 2) * ((finalGamma - .pi) / alpha))
         default:
             length = diagOver2
         }
@@ -150,7 +154,6 @@ struct MainView: View {
         let scaled = vec * length
 
         return CGSize(width: scaled.x, height: scaled.y)
-
     }
 }
 
@@ -158,10 +161,10 @@ struct ARViewContainer: UIViewRepresentable {
     @EnvironmentObject private var arView: ARView
     var showsMesh = true
 
-
     func makeUIView(context: Context) -> ARView {
+        let focusSquare = FocusEntity(on: self.arView, focus: .classic)
+        
         arView.automaticallyConfigureSession = false
-        arView.debugOptions.insert(.showSceneUnderstanding)
         arView.environment.sceneUnderstanding.options.insert(.occlusion)
         arView.renderOptions = .disableGroundingShadows
 
@@ -184,5 +187,4 @@ extension ARView {
             debugOptions.insert(.showSceneUnderstanding)
         }
     }
-
 }

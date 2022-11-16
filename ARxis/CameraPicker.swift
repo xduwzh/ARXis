@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CameraPicker: View {
+    var onCameraTap: (String) -> Void
+    
     var body: some View {
         VStack {
             ForEach(CAMERAS) { camera in
@@ -18,8 +20,10 @@ struct CameraPicker: View {
                         .cornerRadius(10)
                     Text(camera.name)
                 }
-                .onDrag {
-                    NSItemProvider(object: camera.id as NSString)
+                .onTapGesture {
+                    withAnimation(.linear(duration: 0.3)) {
+                        onCameraTap(camera.id)
+                    }
                 }
             }
         }
@@ -29,6 +33,6 @@ struct CameraPicker: View {
 
 struct CameraPicker_Previews: PreviewProvider {
     static var previews: some View {
-        CameraPicker()
+        CameraPicker(onCameraTap: {_ in})
     }
 }
