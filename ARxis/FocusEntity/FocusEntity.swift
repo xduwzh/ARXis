@@ -10,6 +10,7 @@ import Foundation
 import RealityKit
 #if canImport(RealityFoundation)
 import RealityFoundation
+import SwiftUI
 #endif
 
 #if os(macOS) || targetEnvironment(simulator)

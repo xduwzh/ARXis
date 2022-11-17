@@ -15,7 +15,7 @@ enum Axis {
     var simd: SIMD3<Float> {
         switch self {
         case .horizontal:
-            return [0, 0, 1]
+            return [0, 1, 0]
         case .vertical:
             return [1, 0, 0]
         }
@@ -49,8 +49,8 @@ struct CameraInScene: Identifiable {
         self.fov = fov
 
         cameraEntity = anchor.children[0]
-        movablePart = cameraEntity.children[cameraEntity.children.endIndex - 1]
-//        movablePart = cameraEntity.findEntity(named: model.rotatablePart)!
+//        movablePart = cameraEntity.children[cameraEntity.children.endIndex - 1]
+        movablePart = cameraEntity.findEntity(named: model.rotatablePart)!
     }
 
     func toggleFOVCone() {
@@ -58,7 +58,7 @@ struct CameraInScene: Identifiable {
     }
 
     func rotate(angle: Float, axis: Axis) {
-        movablePart.transform.rotation *= simd_quatf(angle: angle, axis: axis.simd)
+        movablePart.orientation *= simd_quatf(angle: angle, axis: axis.simd)
     }
 
     mutating func replaceFov(_ newFov: FOVEntity) {

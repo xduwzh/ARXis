@@ -42,14 +42,16 @@ class SceneManager: ObservableObject {
         let fov = createFOV(height: 0.4, fov: camera.defaultFOV, culling: .none)
         let coneAnchor = Entity()
 
-//        coneAnchor.orientation = simd_quatf(angle: .pi/2, axis: [1, 0, 0])
+        coneAnchor.orientation = simd_quatf(angle: .pi/2, axis: [1, 0, 0])
 
+        
         coneAnchor.addChild(fov)
         anchor.addChild(object)
-//        object.findEntity(named: camera.lensPart)!.addChild(coneAnchor)
-        object.addChild(coneAnchor)
-
-//        arView.installGestures(.translation, for: object)
+        
+        let lensEntity = object.findEntity(named: camera.lensPart)!
+        
+        lensEntity.addChild(coneAnchor)
+//        fov.look(at: [0, 0, 1], from: [0, 0, 0], relativeTo: lensEntity)
 
         arView.scene.anchors.append(anchor)
         cameras.append(CameraInScene(anchor: anchor, model: camera, fov: fov))
@@ -160,7 +162,6 @@ class SceneManager: ObservableObject {
         
 //        let projection = arView.project(fov.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
         let relPos = fov.position(relativeTo: arView.getSelfEntity())
-        debugPrint(relPos)
         
         let lensPos = LensPosition(
             pos: arView.project(fov.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1),

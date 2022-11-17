@@ -76,17 +76,22 @@ struct MainView: View {
                 .padding()
                 if let selectedCamera = selectedCamera {
                     getObjectManipulator(for: selectedCamera)
+                        .frame(width: 200, height: 200)
+                } else {
+                    EmptyView()
+                        .frame(width: 200, height: 200)
                 }
             }
-            .frame(minHeight: 125)
+            .foregroundColor(.axisYellow)
+            .frame(minHeight: 150)
         }
     }
 
     func getObjectManipulator(for camera: CameraInScene) -> ObjectManipulator {
         ObjectManipulator(
             onArrowUp: { camera.rotate(angle: -.pi / 12, axis: .vertical) },
-            onArrowLeft: { camera.rotate(angle: .pi / 12, axis: .horizontal) },
-            onArrowRight: { camera.rotate(angle: -.pi / 12, axis: .horizontal) },
+            onArrowLeft: { camera.rotate(angle: -.pi / 12, axis: .horizontal) },
+            onArrowRight: { camera.rotate(angle: .pi / 12, axis: .horizontal) },
             onArrowDown: { camera.rotate(angle: .pi / 12, axis: .vertical) },
             onTrashClick: {
                 sceneManager.removeCamera(camera)
@@ -162,7 +167,7 @@ struct ARViewContainer: UIViewRepresentable {
     var showsMesh = true
 
     func makeUIView(context: Context) -> ARView {
-        let focusSquare = FocusEntity(on: self.arView, focus: .classic)
+        let _ = FocusEntity(on: self.arView, focus: .classic)
         
         arView.automaticallyConfigureSession = false
         arView.environment.sceneUnderstanding.options.insert(.occlusion)

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension Array where Element == NSItemProvider {
     func loadObjects<T>(
@@ -64,9 +65,14 @@ extension Float {
 }
 
 
-//extension Color {
-//    static var AxisYellow {
-//        Color(red: 255/255, green: 204/255, blue: 51/255)
-//    }
-//}
+extension Color {
+    static let axisYellow = Color(red: 255/255, green: 204/255, blue: 51/255)
+    static let axisRed = Color(red: 255/255, green: 204/255, blue: 51/255)
+    static let axisGrey = Color(red: 216/255, green: 207/255, blue: 198/255)
+    
+    static let axisGreen = Color(red: 141/255, green: 198/255, blue: 63/255)
+    static let axisPurple = Color(red: 129/255, green: 41/255, blue: 144/255)
+    static let axisBlue = Color(red: 0/255, green: 157/255, blue: 220/255)
+    
+}
 

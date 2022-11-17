@@ -21,38 +21,25 @@ struct CameraModel: Identifiable {
 
     let rotatablePart: String
     let lensPart: String
-    
+
     var defaultFOV: FOV_T {
         (v: spec.vFOV.upperBound, h: spec.hFOV.upperBound)
     }
 
-    fileprivate init(name: String, rotatablePart: String, lensPart: String, spec: TechnicalSpec, scale: SIMD3<Float>? = nil, orientation: simd_quatf? = nil) {
+    fileprivate init(name: String, rotatablePart: String, lensPart: String, spec: TechnicalSpec) {
         self.name = name
         self.spec = spec
         self.rotatablePart = rotatablePart
         self.lensPart = lensPart
 
         let entity = try! Entity.load(named: "\(name)")
-        if let scale = scale {
-            entity.setScale(scale, relativeTo: nil)
-        }
-        if let orientation = orientation {
-            entity.orientation = orientation
-        }
-        
+
         entity.generateCollisionShapes(recursive: true)
         model = ModelEntity()
         model.addChild(entity)
 
         image = UIImage(named: "CameraModels/\(name).png") ?? UIImage(systemName: "chevron.up")!
     }
-
-//    fileprivate init(name: String, model: ModelEntity, spec: TechnicalSpec) {
-//        self.name = name
-//        self.model = model
-//        self.spec = spec
-//        image = UIImage(named: "CameraModels/\(name).png")!
-//    }
 
     func getNew() -> ModelEntity {
         model.clone(recursive: true)
@@ -61,26 +48,24 @@ struct CameraModel: Identifiable {
 
 let CAMERAS: [CameraModel] = [
     CameraModel(
-            name: "AXIS-M4216_LV",
-            rotatablePart: "Camera_objective",
-            lensPart: "Camera_objective",
-            spec: TechnicalSpec(
-                    resolution: (2304, 1728),
-                    vFOV: 45...100,
-                    hFOV: 34...72
-            ),
-            scale: SIMD3(repeating: 0.01),
-            orientation: simd_quatf(angle: -.pi/2, axis: [1, 0, 0])
+        name: "AXIS_M4216_LV",
+        rotatablePart: "OurLens",
+        lensPart: "OurLens",
+        spec: TechnicalSpec(
+            resolution: (2304, 1728),
+            vFOV: 45 ... 100,
+            hFOV: 34 ... 72
+        )
     ),
     CameraModel(
-            name: "AXIS_P1375-E",
-            rotatablePart: "camera_rotator",
-            lensPart: "Camera_objective",
-            spec: TechnicalSpec(
-                    resolution: (1920, 1080),
-                    vFOV: 42...107,
-                    hFOV: 24...57
-            )
+        name: "AXIS_P1375-E",
+        rotatablePart: "OurPart",
+        lensPart: "OurLens",
+        spec: TechnicalSpec(
+            resolution: (1920, 1080),
+            vFOV: 42 ... 107,
+            hFOV: 24 ... 57
+        )
     ),
 ]
 
