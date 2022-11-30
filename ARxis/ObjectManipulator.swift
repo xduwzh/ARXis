@@ -75,7 +75,7 @@ struct ObjectManipulator: View {
                     onArrowRight: onArrowRight,
                     onArrowDown: onArrowDown
                 )
-                .font(.system(size: 20))
+                .font(.system(size: 25))
                 .padding()
                 Spacer()
                 VStack {
@@ -90,6 +90,7 @@ struct ObjectManipulator: View {
                         onTrashClick()
                     }, label: {
                         Image(systemName: "trash.fill")
+                            .foregroundColor(.red)
                     })
                 }.padding()
             }
@@ -101,9 +102,9 @@ struct ObjectManipulator: View {
                         .padding(.leading)
                 Slider(value: $fovHeight, in: fovHeightRange) {
                 } minimumValueLabel: {
-                    Text(String(format: "%.2f", fovHeightRange.lowerBound))
+                    Text(String(format: "%.1f", fovHeightRange.lowerBound))
                 } maximumValueLabel: {
-                    Text(String(format: "%.2f", fovHeightRange.upperBound))
+                    Text(String(format: "%.1f", fovHeightRange.upperBound))
                 }
                 .onChange(of: fovHeight, perform: onSliderValueChanged)
                 .padding()
@@ -111,14 +112,9 @@ struct ObjectManipulator: View {
 
 
         }
-        .frame(width: 200, height: 200)
+        .frame(width: 250, height: 200)
     }
-    
-    let gradientColors = [
-        Color(uiColor: UIColor(white: 0.8, alpha: 1)),
-        Color(uiColor: UIColor(white: 0.75, alpha: 1)),
-        Color(uiColor: UIColor(white: 0.7, alpha: 1))
-    ]
+
 }
 
 func doNothing() {}

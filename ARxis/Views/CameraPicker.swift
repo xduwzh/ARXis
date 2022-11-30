@@ -11,14 +11,15 @@ struct CameraPicker: View {
     var onCameraTap: (String) -> Void
     
     var body: some View {
-        VStack {
+        VStack() {
             ForEach(CAMERAS) { camera in
                 VStack {
                     Image(uiImage: camera.image)
                         .resizable()
-                        .frame(width: 100, height: 100)
+                        .frame(width: 75, height: 75)
                         .cornerRadius(10)
                     Text(camera.name)
+                        .font(.caption)
                 }
                 .onTapGesture {
                     withAnimation(.linear(duration: 0.3)) {

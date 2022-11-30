@@ -9,29 +9,29 @@ import SwiftUI
 
 struct CameraList: View {
     let cameras: [CameraInScene]
+    var selectedCameraId: ObjectIdentifier?
     var onCameraTap: (CameraInScene) -> Void
 
-    var selectedCameraId: ObjectIdentifier?
-
     var body: some View {
-        ScrollView(.horizontal) {
+        
+        ScrollView(.horizontal, showsIndicators: true) {
             HStack {
                 ForEach(cameras) { camera in
                     VStack {
                         ZStack {
-                            if let selectedCameraId, camera.id == selectedCameraId {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .foregroundColor(.green)
-                                    .frame(width: 105, height: 105)
-                            }
+                            RoundedRectangle(cornerRadius: 10)
+                                .foregroundColor(selectedCameraId != nil && camera.id == selectedCameraId ? .green : .clear)
+                                .frame(width: 80, height: 80)
+        
                             Image(uiImage: camera.model.image)
                                 .resizable()
-                                .frame(width: 100, height: 100)
+                                .frame(width: 75, height: 75)
                                 .cornerRadius(10)
                                 .padding()
-
                         }
-
+                        .offset(y: selectedCameraId != nil && camera.id == selectedCameraId ? -15 : 0)
+                        
+                        
                         HStack {
                             if camera.seesIpad {
                                 PixelDensityVisualizer(pixelDensity: camera.pixelDensity)
@@ -41,7 +41,6 @@ struct CameraList: View {
                         }
                         .frame(width: 100, height: 30)
                     }
-
                     .padding()
                     .onTapGesture {
                         onCameraTap(camera)

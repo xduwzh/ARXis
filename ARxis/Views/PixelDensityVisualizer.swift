@@ -44,8 +44,8 @@ struct PixelDensitySlider: View {
                 
                 Image(systemName: "arrowtriangle.down.fill")
                     .resizable()
-                    .frame(width: 13, height: 13)
-                    .foregroundColor(.black)
+                    .frame(width: 9, height: 9)
+                    .foregroundColor(.white)
                     .frame(width: circleDiameter, height: circleDiameter)
                     .offset(x: getPointerOffset(pointerDiameter: circleDiameter, width: width))
                     .padding(.bottom, 2)

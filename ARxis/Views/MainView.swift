@@ -29,61 +29,113 @@ struct MainView: View {
     @ObservedObject var sceneManager: SceneManager
     @EnvironmentObject private var arView: ARView
     @State private var selectedCamera: CameraInScene?
+    @State private var cameraPickerVisible = true
 
     @State var isMeshOn: Bool = false
 
-    var body: some View {
+    private struct Constants {
+        static let RightMenuWidth: CGFloat = 130
+    }
+    
+    func debugView() -> some View {
         VStack {
-            HStack {
-                GeometryReader { proxy in
-                    ZStack {
-                        ARViewContainer()
-                            .edgesIgnoringSafeArea(.all)
-                            .onTap { point in
-                                selectedCamera = sceneManager.getCamera(at: point)
-                            }
-                    }
-
-                    
-                    if let selectedCamera = selectedCamera, !between(x: sceneManager.lensesPositions[selectedCamera.fov.id]!.pos.x, lower: 0, upper: proxy.size.width) || !between(x: sceneManager.lensesPositions[selectedCamera.fov.id]!.pos.y, lower: 0, upper: proxy.size.height) {
-                        let vec = getVector(for: selectedCamera, dimensions: proxy.size)
-                        let angle = getRotationAngle(for: selectedCamera, dimensions: proxy.size)
-                        Image(systemName: "arrow.right")
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                            .rotationEffect(.init(radians: angle))
-                            .offset(x: proxy.size.width / 2, y: proxy.size.height / 2)
-                            .offset(getVectorOffset(forGamma: angle, forVec: vec, dimensions: proxy.size * 0.7))
-                    }
+            Text("Mesh visibility")
+            Toggle("Mesh visibility", isOn: $isMeshOn)
+                .labelsHidden()
+                .onChange(of: isMeshOn) { value in
+                    arView.toggleMesh(isOn: !value)
                 }
+        }
+    }
 
+    func ARView() -> some View {
+        GeometryReader { proxy in
+            ZStack {
+                ARViewContainer()
+                    .edgesIgnoringSafeArea(.all)
+                    .onTap { point in
+                        selectedCamera = sceneManager.getCamera(at: point)
+                    }
+            }
+
+            if let selectedCamera = selectedCamera, !between(x: sceneManager.lensesPositions[selectedCamera.fov.id]!.pos.x, lower: 0, upper: proxy.size.width) || !between(x: sceneManager.lensesPositions[selectedCamera.fov.id]!.pos.y, lower: 0, upper: proxy.size.height) {
+                let vec = getVector(for: selectedCamera, dimensions: proxy.size)
+                let angle = getRotationAngle(for: selectedCamera, dimensions: proxy.size)
+                Image(systemName: "arrow.right")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                    .rotationEffect(.init(radians: angle))
+                    .offset(x: proxy.size.width / 2, y: proxy.size.height / 2)
+                    .offset(getVectorOffset(forGamma: angle, forVec: vec, dimensions: proxy.size * 0.7))
+            }
+        }
+    }
+
+    func MenuView() -> some View {
+        HStack {
+            
+            
+            ZStack {
                 VStack {
-                    Text("Mesh visibility")
-                    Toggle("Mesh visibility", isOn: $isMeshOn)
-                        .labelsHidden()
-                        .onChange(of: isMeshOn) { value in
-                            arView.toggleMesh(isOn: !value)
+                    Spacer()
+                    
+                    if let selectedCamera = selectedCamera {
+                        HStack {
+                            Spacer()
+                            getObjectManipulator(for: selectedCamera)
+                                .background {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(.white.opacity(0.4))
+                                }
                         }
-                    CameraPicker(onCameraTap: self.sceneManager.placeCamera)
+                    }
+                    
+                    CameraList(cameras: sceneManager.cameras, selectedCameraId: selectedCamera?.id) { camera in
+                        withAnimation {
+                            selectedCamera = camera
+                        }
+                    }
+                    .background {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(.white.opacity(0.06))
+                    }
                 }
+                .padding(.vertical)
+                .padding(.leading, Constants.RightMenuWidth)
             }
-            .frame(minHeight: 750)
+            
+            
+            ZStack {
+                GeometryReader { geometry in
+                    ZStack {
+                        RoundedCorner(radius: 8, corners: [.topLeft, .bottomLeft])
+                            .fill(.white.opacity(0.06))
+                        VStack {
+                            CameraPicker(onCameraTap: self.sceneManager.placeCamera)
+                            Spacer()
+                        }
+                    }.offset(cameraPickerVisible ? CGSize(width: 0, height: 0) : CGSize(width: geometry.size.width, height: 0))
 
-            HStack {
-                CameraList(cameras: sceneManager.cameras, selectedCameraId: selectedCamera?.id) { camera in
-                    selectedCamera = camera
-                }
-                .padding()
-                if let selectedCamera = selectedCamera {
-                    getObjectManipulator(for: selectedCamera)
-                        .frame(width: 200, height: 200)
-                } else {
-                    EmptyView()
-                        .frame(width: 200, height: 200)
+                    Image(systemName: "arrow.right.circle.fill")
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                        .rotationEffect(Angle(degrees: cameraPickerVisible ? 0 : -180))
+                        .onTapGesture {
+                            withAnimation() {
+                                cameraPickerVisible.toggle()
+                            }
+                        }
+                        .offset(CGSize(width: cameraPickerVisible ? -25 : geometry.size.width - 35, height: geometry.size.height / 2 - 80))
                 }
             }
-            .foregroundColor(.axisYellow)
-            .frame(minHeight: 150)
+            .frame(maxWidth: Constants.RightMenuWidth)
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            ARView()
+            MenuView()
         }
     }
 
@@ -168,7 +220,7 @@ struct ARViewContainer: UIViewRepresentable {
 
     func makeUIView(context: Context) -> ARView {
         let _ = FocusEntity(on: self.arView, focus: .classic)
-        
+
         arView.automaticallyConfigureSession = false
         arView.environment.sceneUnderstanding.options.insert(.occlusion)
         arView.renderOptions = .disableGroundingShadows
