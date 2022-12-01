@@ -63,7 +63,7 @@ struct ObjectManipulator: View {
     @State var fovActive: Bool
     @State var fovHeight: Float = 1
 
-    var fovHeightRange: ClosedRange<Float> = 0.1...5
+    var fovHeightRange: ClosedRange<Float> = 0 ... 0.999
 
 
     var body: some View {
@@ -97,14 +97,14 @@ struct ObjectManipulator: View {
 
 
             VStack(alignment: .leading, spacing: 0) {
-                Text("FOV Height")
+                Text("FOV visualization height")
                         .font(.system(size: 15))
                         .padding(.leading)
                 Slider(value: $fovHeight, in: fovHeightRange) {
                 } minimumValueLabel: {
-                    Text(String(format: "%.1f", fovHeightRange.lowerBound))
+                    Text("Min")
                 } maximumValueLabel: {
-                    Text(String(format: "%.1f", fovHeightRange.upperBound))
+                    Text(String("Max"))
                 }
                 .onChange(of: fovHeight, perform: onSliderValueChanged)
                 .padding()

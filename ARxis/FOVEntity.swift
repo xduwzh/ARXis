@@ -26,6 +26,7 @@ class FOVEntity: Entity, HasModel {
 
     init(height: Float, fov: FOV_T, materials: [Material], sceneManager: SceneManager) {
         super.init()
+        self.name = "fov"
 
         let mesh = try! MeshResource.generatePyramid(height: height, horizontalFOV: fov.h, verticalFOV: fov.v)
 

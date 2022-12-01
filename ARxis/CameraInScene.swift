@@ -33,8 +33,7 @@ struct CameraInScene: Identifiable {
 
     var seesIpad: Bool = false
     var pixelDensity: Double = -1
-    var distanceToFloor: Double? = nil
-
+    var distanceToFloor: Double?
 
     var movablePart: Entity
     var cameraEntity: Entity
@@ -54,7 +53,7 @@ struct CameraInScene: Identifiable {
     }
 
     func toggleFOVCone() {
-        movablePart.isEnabled.toggle()
+        cameraEntity.findEntity(named: "fov")?.isEnabled.toggle()
     }
 
     func rotate(angle: Float, axis: Axis) {
@@ -68,5 +67,4 @@ struct CameraInScene: Identifiable {
             fov = newFov
         }
     }
-
 }

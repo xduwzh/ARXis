@@ -35,6 +35,7 @@ struct MainView: View {
 
     private struct Constants {
         static let RightMenuWidth: CGFloat = 130
+        static let UIOpacity: CGFloat = 0.1
     }
     
     func debugView() -> some View {
@@ -54,7 +55,9 @@ struct MainView: View {
                 ARViewContainer()
                     .edgesIgnoringSafeArea(.all)
                     .onTap { point in
-                        selectedCamera = sceneManager.getCamera(at: point)
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            selectedCamera = sceneManager.getCamera(at: point)
+                        }
                     }
             }
 
@@ -91,13 +94,13 @@ struct MainView: View {
                     }
                     
                     CameraList(cameras: sceneManager.cameras, selectedCameraId: selectedCamera?.id) { camera in
-                        withAnimation {
+                        withAnimation(.easeOut(duration: 0.2)) {
                             selectedCamera = camera
                         }
                     }
                     .background {
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(.white.opacity(0.06))
+                            .fill(.white.opacity(Constants.UIOpacity))
                     }
                 }
                 .padding(.vertical)
@@ -109,7 +112,7 @@ struct MainView: View {
                 GeometryReader { geometry in
                     ZStack {
                         RoundedCorner(radius: 8, corners: [.topLeft, .bottomLeft])
-                            .fill(.white.opacity(0.06))
+                            .fill(.white.opacity(Constants.UIOpacity))
                         VStack {
                             CameraPicker(onCameraTap: self.sceneManager.placeCamera)
                             Spacer()

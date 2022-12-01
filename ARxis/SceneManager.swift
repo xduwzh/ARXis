@@ -44,7 +44,6 @@ class SceneManager: ObservableObject {
 
         coneAnchor.orientation = simd_quatf(angle: .pi/2, axis: [1, 0, 0])
 
-        
         coneAnchor.addChild(fov)
         anchor.addChild(object)
         
@@ -76,7 +75,11 @@ class SceneManager: ObservableObject {
 
     func setFovHeight(of camera: CameraInScene, to height: Float) {
         let index = cameras.index(of: camera)
-        cameras[index].replaceFov(createFOV(height: height, fov: camera.fov.fov, culling: .none, materials: camera.fov.model?.materials))
+
+
+        let newHeight = max((1/(-height + 1)) - 1, 100)
+
+        cameras[index].replaceFov(createFOV(height: newHeight, fov: camera.fov.fov, culling: .none, materials: camera.fov.model?.materials))
     }
 
     func setDistanceToFloor(for entity: FOVEntity) {
