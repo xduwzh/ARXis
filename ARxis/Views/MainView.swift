@@ -61,51 +61,57 @@ struct MainView: View {
                     }
             }
 
-            if let selectedCamera = selectedCamera, !between(x: sceneManager.lensesPositions[selectedCamera.fov.id]!.pos.x, lower: 0, upper: proxy.size.width) || !between(x: sceneManager.lensesPositions[selectedCamera.fov.id]!.pos.y, lower: 0, upper: proxy.size.height) {
-                let vec = getVector(for: selectedCamera, dimensions: proxy.size)
-                let angle = getRotationAngle(for: selectedCamera, dimensions: proxy.size)
-                Image(systemName: "arrow.right")
-                    .resizable()
-                    .frame(width: 50, height: 50)
-                    .rotationEffect(.init(radians: angle))
-                    .offset(x: proxy.size.width / 2, y: proxy.size.height / 2)
-                    .offset(getVectorOffset(forGamma: angle, forVec: vec, dimensions: proxy.size * 0.7))
+            if let selectedCamera = selectedCamera {
+                if !between(x: sceneManager.lensesPositions[selectedCamera.fov.id]!.pos.x, lower: 0, upper: proxy.size.width) || !between(x: sceneManager.lensesPositions[selectedCamera.fov.id]!.pos.y, lower: 0, upper: proxy.size.height) {
+                    let vec = getVector(for: selectedCamera, dimensions: proxy.size)
+                    let angle = getRotationAngle(for: selectedCamera, dimensions: proxy.size)
+                    Image(systemName: "arrow.right")
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                        .rotationEffect(.init(radians: angle))
+                        .offset(x: proxy.size.width / 2, y: proxy.size.height / 2)
+                        .offset(getVectorOffset(forGamma: angle, forVec: vec, dimensions: proxy.size * 0.7))
+                } else {
+                    let projection = arView.project(selectedCamera.cameraEntity.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
+                    Image(systemName: "arrow.up")
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                        .offset(x: projection.x, y: projection.y + 60)
+                }
             }
+
         }
     }
 
+
     func MenuView() -> some View {
         HStack {
-            
-            
-            ZStack {
-                VStack {
-                    Spacer()
-                    
-                    if let selectedCamera = selectedCamera {
-                        HStack {
-                            Spacer()
-                            getObjectManipulator(for: selectedCamera)
-                                .background {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(.white.opacity(0.4))
-                                }
-                        }
-                    }
-                    
-                    CameraList(cameras: sceneManager.cameras, selectedCameraId: selectedCamera?.id) { camera in
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            selectedCamera = camera
-                        }
-                    }
-                    .background {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(.white.opacity(Constants.UIOpacity))
+            VStack {
+                Spacer()
+                if let selectedCamera = selectedCamera {
+                    HStack {
+                        Spacer()
+                        getObjectManipulator(for: selectedCamera)
+                            .background {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(.white.opacity(0.4))
+                            }
                     }
                 }
-                .padding(.vertical)
-                .padding(.leading, Constants.RightMenuWidth)
+
+                CameraList(cameras: sceneManager.cameras, selectedCameraId: selectedCamera?.id) { camera in
+                    withAnimation(.easeOut(duration: 0.2)) {
+                        selectedCamera = camera
+                    }
+                }
+                .background {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(.white.opacity(Constants.UIOpacity))
+                }
             }
+            .padding(.vertical)
+            .padding(.leading, Constants.RightMenuWidth)
+
             
             
             ZStack {
