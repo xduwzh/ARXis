@@ -75,7 +75,7 @@ class SceneManager: ObservableObject {
 
     func setFovHeight(of camera: CameraInScene, to height: Float) {
         let index = cameras.index(of: camera)
-        let newHeight = max((1/(-height + 1)) - 1, 100)
+        let newHeight = min((1/(-height + 1)) - 1, 100)
         cameras[index].replaceFov(createFOV(height: newHeight, fov: camera.fov.fov, culling: .none, materials: camera.fov.model?.materials))
     }
 
