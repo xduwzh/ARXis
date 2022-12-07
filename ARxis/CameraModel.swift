@@ -67,6 +67,16 @@ let CAMERAS: [CameraModel] = [
             hFOV: 24 ... 57
         )
     ),
+    CameraModel(
+        name: "AXIS_P1375",
+        rotatablePart: "OurPart",
+        lensPart: "OurLens",
+        spec: TechnicalSpec(
+            resolution: (1920, 1080),
+            vFOV: 42 ... 124,
+            hFOV: 24 ... 65
+        )
+    ),
 ]
 
 func createBox(size: Float) -> ModelEntity {

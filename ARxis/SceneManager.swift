@@ -53,6 +53,7 @@ class SceneManager: ObservableObject {
 //        fov.look(at: [0, 0, 1], from: [0, 0, 0], relativeTo: lensEntity)
 
         arView.scene.anchors.append(anchor)
+        arView.installGestures(.translation, for: object)
         cameras.append(CameraInScene(anchor: anchor, model: camera, fov: fov))
     }
 
@@ -120,26 +121,30 @@ class SceneManager: ObservableObject {
 
         let seesIpad = x > abs(relativeIpadPos.x) && z > abs(relativeIpadPos.z)
         cameras[cameras.index(of: camera)].seesIpad = seesIpad
-
-//        let result = arView.scene.raycast(from: SIMD3(ipadPos.x, ipadPos.y, ipadPos.z), to: anchorPos, query: .nearest)
+        
+        if !seesIpad {
+            return
+        }
+        
+//        let ipadGlobalPos = ipadEntity.position(relativeTo: nil)
+//
+//        let result = arView.scene.raycast(from: SIMD3(ipadGlobalPos.x, ipadGlobalPos.y, ipadGlobalPos.z), to: entity.parent!.parent!.position, query: .nearest)
 //        if let hit = result.first, let anch = hit.entity.anchor {
-//            debugPrint(Date(), anch.id)
+//            debugPrint("kraksa \(anch.id) cam: \(camera.anchor.id) fov: \(entity.anchor!.id)")
 //            if anch.id != camera.anchor.id {
-//                cameras[index].seesIpad = false
+//                cameras[cameras.index(of: camera)].seesIpad = false
 //                return
 //            }
-//        } else {
-//            cameras[index].seesIpad = false
-//            return
 //        }
-//
-//        let anchorToCamera = normalize(SIMD3(ipadPos.x - anchorPos.x, ipadPos.y - anchorPos.y, ipadPos.z - anchorPos.z))
-//        let anchorToCone = normalize(SIMD3(conePos.x - anchorPos.x, conePos.y - anchorPos.y, conePos.z - anchorPos.z))
-//
-//        let angle = acos(dot(anchorToCamera, anchorToCone))
-//
-//        cameras[index].seesIpad = false
-//        //        cameras[index].seesIpad = angle < entity.fovAngle
+        
+        let res = arView.hitTest(arView.project(camera.anchor.position)!)
+        if let first = res.first {
+            let id = first.entity.anchor?.id
+            if id != camera.anchor.id {
+                cameras[cameras.index(of: camera)].seesIpad = false
+            }
+        }
+
     }
 
     func setPixelDensity(for entity: FOVEntity) {

@@ -87,54 +87,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5E21A9CA-6638-4E0A-AAC9-57A754A638A5"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ARxis/SceneManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "138"
-            endingLineNumber = "138"
-            landmarkName = "setSeesIpad(for:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "5E21A9CA-6638-4E0A-AAC9-57A754A638A5 - d3a3ea9ae5e7171e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ARXis.SceneManager.setPixelDensity(for: ARXis.FOVEntity) -&gt; ()"
-                  moduleName = "ARXis"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/akrolczyk/Developer/ARXis/ARxis/SceneManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "133"
-                  endingLineNumber = "133"
-                  offsetFromSymbolStart = "92">
-               </Location>
-               <Location
-                  uuid = "5E21A9CA-6638-4E0A-AAC9-57A754A638A5 - d3a3ea9ae5e7171e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ARXis.SceneManager.setPixelDensity(for: ARXis.FOVEntity) -&gt; ()"
-                  moduleName = "ARXis"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/akrolczyk/Developer/ARXis/ARxis/SceneManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "133"
-                  endingLineNumber = "133"
-                  offsetFromSymbolStart = "336">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "ABC5EF95-B950-4ECC-B998-E8606EBEC127"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -142,58 +94,10 @@
             filePath = "ARxis/SceneManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
+            startingLineNumber = "72"
+            endingLineNumber = "72"
             landmarkName = "createFOV(height:fov:culling:materials:)"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "495AA50E-282F-45AF-B4C6-256D4F69BB15"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ARxis/SceneManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
-            landmarkName = "setSeesIpad(for:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "495AA50E-282F-45AF-B4C6-256D4F69BB15 - d3a3ea9ae5e7171e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ARXis.SceneManager.setPixelDensity(for: ARXis.FOVEntity) -&gt; ()"
-                  moduleName = "ARXis"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/akrolczyk/Developer/ARXis/ARxis/SceneManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "133"
-                  endingLineNumber = "133"
-                  offsetFromSymbolStart = "92">
-               </Location>
-               <Location
-                  uuid = "495AA50E-282F-45AF-B4C6-256D4F69BB15 - d3a3ea9ae5e7171e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ARXis.SceneManager.setPixelDensity(for: ARXis.FOVEntity) -&gt; ()"
-                  moduleName = "ARXis"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/akrolczyk/Developer/ARXis/ARxis/SceneManager.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "133"
-                  endingLineNumber = "133"
-                  offsetFromSymbolStart = "336">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

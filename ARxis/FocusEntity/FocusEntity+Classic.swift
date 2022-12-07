@@ -57,9 +57,22 @@ internal extension FocusEntity {
                 color: classicStyle.color
             )
         }
+        
+        let segments2 = segCorners.enumerated().map { (index, cornerAlign) -> Segment in
+            Segment(
+                name: "s\(index)",
+                corner: cornerAlign.0,
+                alignment: cornerAlign.1,
+                color: .black
+            )
+        }
+        
+        self.segments.append(contentsOf: segments2)
+        
+        
 
         let sl: Float = 0.5  // segment length
-        let c: Float = FocusEntity.thickness / 2 // correction to align lines perfectly
+        var c: Float = FocusEntity.thickness / 2 // correction to align lines perfectly
         segments[0].position += [-(sl / 2 - c), 0, -(sl - c)]
         segments[1].position += [sl / 2 - c, 0, -(sl - c)]
         segments[2].position += [-sl, 0, -sl / 2]
@@ -68,6 +81,16 @@ internal extension FocusEntity {
         segments[5].position += [sl, 0, sl / 2]
         segments[6].position += [-(sl / 2 - c), 0, sl - c]
         segments[7].position += [sl / 2 - c, 0, sl - c]
+        let d = c * 2
+        c *= 3
+        segments[8].position += [-(sl / 2 - c), 0, -(sl - c)]
+        segments[9].position += [sl / 2 - c, 0, -(sl - c)]
+        segments[10].position += [-sl + d, 0, -sl / 2 + d]
+        segments[11].position += [sl-d, 0, -sl / 2+d]
+        segments[12].position += [-sl+d, 0, sl / 2-d]
+        segments[13].position += [sl-d, 0, sl / 2-d]
+        segments[14].position += [-(sl / 2 - c), 0, sl - c]
+        segments[15].position += [sl / 2 - c, 0, sl - c]
 
         for segment in segments {
             self.positioningEntity.addChild(segment)
