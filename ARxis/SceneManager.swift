@@ -125,26 +125,23 @@ class SceneManager: ObservableObject {
         if !seesIpad {
             return
         }
-        
-//        let ipadGlobalPos = ipadEntity.position(relativeTo: nil)
-//
-//        let result = arView.scene.raycast(from: SIMD3(ipadGlobalPos.x, ipadGlobalPos.y, ipadGlobalPos.z), to: entity.parent!.parent!.position, query: .nearest)
-//        if let hit = result.first, let anch = hit.entity.anchor {
-//            debugPrint("kraksa \(anch.id) cam: \(camera.anchor.id) fov: \(entity.anchor!.id)")
-//            if anch.id != camera.anchor.id {
-//                cameras[cameras.index(of: camera)].seesIpad = false
-//                return
-//            }
-//        }
-        
-        let res = arView.hitTest(arView.project(camera.anchor.position)!)
-        if let first = res.first {
-            let id = first.entity.anchor?.id
-            if id != camera.anchor.id {
+
+        guard let (camPos, camDir) = self.getCamVector() else {
+            return
+        }
+        let dir = camera.cameraEntity.position(relativeTo: nil) - camPos
+        let rcQuery = ARRaycastQuery(
+            origin: camPos, direction: dir,
+            allowing: .estimatedPlane, alignment: .any
+        )
+        let result = self.arView.session.raycast(rcQuery)
+        if let hit = result.first {
+            let pos = hit.worldTransform.columns.3
+            let leng = ([pos.x, pos.y, pos.z] - camera.cameraEntity.position(relativeTo: nil)).length
+            if leng > 0.09 { // chosen arbitrarily
                 cameras[cameras.index(of: camera)].seesIpad = false
             }
         }
-
     }
 
     func setPixelDensity(for entity: FOVEntity) {
