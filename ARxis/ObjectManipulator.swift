@@ -134,3 +134,7 @@ struct ObjectManipulator_Previews: PreviewProvider {
         )
     }
 }
+//
+//#Preview {
+//    ArrowView()
+//}

@@ -53,6 +53,7 @@ let CAMERAS: [CameraModel] = [
         lensPart: "OurLens",
         spec: TechnicalSpec(
             resolution: (2304, 1728),
+            //resolution: Resolution(width: 2304, height: 1728),
             vFOV: 45 ... 100,
             hFOV: 34 ... 72
         )
@@ -63,6 +64,7 @@ let CAMERAS: [CameraModel] = [
         lensPart: "OurLens",
         spec: TechnicalSpec(
             resolution: (1920, 1080),
+            //resolution: Resolution(width: 1920, height: 1080),
             vFOV: 42 ... 107,
             hFOV: 24 ... 57
         )
@@ -73,6 +75,7 @@ let CAMERAS: [CameraModel] = [
         lensPart: "OurLens",
         spec: TechnicalSpec(
             resolution: (1920, 1080),
+            //resolution: Resolution(width: 1920, height: 1080),
             vFOV: 42 ... 124,
             hFOV: 24 ... 65
         )

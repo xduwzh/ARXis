@@ -28,6 +28,7 @@ func between(x: Double, lower: Double, upper: Double) -> Bool {
 struct MainView: View {
     @ObservedObject var sceneManager: SceneManager
     @EnvironmentObject private var arView: ARView
+    @StateObject private var arStatus = ARStatus()
     @State private var selectedCamera: CameraInScene?
     @State private var cameraPickerVisible = true
 
@@ -83,68 +84,93 @@ struct MainView: View {
         }
     }
 
-
+    func getMappedStatus() -> Bool{
+        guard let worldMappingStatus = sceneManager.arView.session.currentFrame?.worldMappingStatus else {
+                return true
+            }
+            return !(worldMappingStatus == .mapped)
+    }
     func MenuView() -> some View {
-        HStack {
-            VStack {
+        VStack{
+            Text(arStatus.infoLabel)
+            HStack{
                 Spacer()
-                if let selectedCamera = selectedCamera {
-                    HStack {
-                        Spacer()
-                        getObjectManipulator(for: selectedCamera)
-                            .background {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(.white.opacity(0.4))
-                            }
-                    }
+                Button("Load") {
+                    sceneManager.loadMap()
+                    //sceneManager.loadExperience()
                 }
-
-                CameraList(cameras: sceneManager.cameras, selectedCameraId: selectedCamera?.id) { camera in
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        selectedCamera = camera
-                    }
-                }
-                .background {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(.white.opacity(Constants.UIOpacity))
-                }
+                Spacer()
+                Button("Save") {
+                    sceneManager.saveMap()
+                }.disabled(getMappedStatus())
+                Spacer()
             }
-            .padding(.vertical)
-            .padding(.leading, Constants.RightMenuWidth)
-
             
-            
-            ZStack {
-                GeometryReader { geometry in
-                    ZStack {
-                        RoundedCorner(radius: 8, corners: [.topLeft, .bottomLeft])
-                            .fill(.white.opacity(Constants.UIOpacity))
-                        VStack {
-                            CameraPicker(onCameraTap: self.sceneManager.placeCamera)
+            HStack {
+                VStack {
+                    Spacer()
+                    //if there is selected camera, show manipulator panel.
+                    if let selectedCamera = selectedCamera {
+                        HStack {
                             Spacer()
+                            getObjectManipulator(for: selectedCamera)
+                                .background {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(.white.opacity(0.4))
+                                }
                         }
-                    }.offset(cameraPickerVisible ? CGSize(width: 0, height: 0) : CGSize(width: geometry.size.width, height: 0))
+                    }
 
-                    Image(systemName: "arrow.right.circle.fill")
-                        .resizable()
-                        .frame(width: 50, height: 50)
-                        .rotationEffect(Angle(degrees: cameraPickerVisible ? 0 : -180))
-                        .onTapGesture {
-                            withAnimation() {
-                                cameraPickerVisible.toggle()
-                            }
+                    CameraList(cameras: sceneManager.cameras, selectedCameraId: selectedCamera?.id) { camera in
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            selectedCamera = camera
                         }
-                        .offset(CGSize(width: cameraPickerVisible ? -25 : geometry.size.width - 35, height: geometry.size.height / 2 - 80))
+                    }
+                    .background {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(.white.opacity(Constants.UIOpacity))
+                    }
                 }
+                .padding(.vertical)
+                .padding(.leading, Constants.RightMenuWidth)
+
+                
+                
+                ZStack {
+                    GeometryReader { geometry in
+                        ZStack {
+                            RoundedCorner(radius: 8, corners: [.topLeft, .bottomLeft])
+                                .fill(.white.opacity(Constants.UIOpacity))
+                            VStack {
+                                CameraPicker(onCameraTap: self.sceneManager.placeCamera)
+                                Spacer()
+                            }
+                        }.offset(cameraPickerVisible ? CGSize(width: 0, height: 0) : CGSize(width: geometry.size.width, height: 0))
+
+                        Image(systemName: "arrow.right.circle.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            .rotationEffect(Angle(degrees: cameraPickerVisible ? 0 : -180))
+                            .onTapGesture {
+                                withAnimation() {
+                                    cameraPickerVisible.toggle()
+                                }
+                            }
+                            .offset(CGSize(width: cameraPickerVisible ? -25 : geometry.size.width - 35, height: geometry.size.height / 2 - 80))
+                    }
+                }
+                .frame(maxWidth: Constants.RightMenuWidth)
+                
             }
-            .frame(maxWidth: Constants.RightMenuWidth)
         }
+        
     }
 
     var body: some View {
         ZStack {
             ARView()
             MenuView()
+                .environmentObject(arStatus)
         }
     }
 
@@ -224,7 +250,9 @@ struct MainView: View {
 }
 
 struct ARViewContainer: UIViewRepresentable {
+    
     @EnvironmentObject private var arView: ARView
+    @EnvironmentObject var arStatus: ARStatus
     var showsMesh = true
 
     func makeUIView(context: Context) -> ARView {
@@ -254,3 +282,5 @@ extension ARView {
         }
     }
 }
+
+

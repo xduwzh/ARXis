@@ -68,3 +68,12 @@ struct CameraInScene: Identifiable {
         }
     }
 }
+
+struct SimpleCameraInScene: Codable{
+
+    var seesIpad: Bool = false
+    var pixelDensity: Double = -1
+    var distanceToFloor: Double?
+    
+    
+}

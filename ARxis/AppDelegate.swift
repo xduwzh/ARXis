@@ -20,7 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ARXisSystem.registerSystem()
         
         let arView = ARView(frame: .zero)
-        let contentView = MainView(sceneManager: SceneManager(arView: arView))
+        let arStatus = ARStatus()
+        let contentView = MainView(sceneManager: SceneManager(arView: arView, arStatus: arStatus))
             .environmentObject(arView)
 
         // Use a UIHostingController as window root view controller.

@@ -66,8 +66,13 @@ struct TCCompression {
 
 struct TechnicalSpec {
     let resolution: (Int, Int)
+    //let resolution: Resolution
     let vFOV: ClosedRange<Float>
     let hFOV: ClosedRange<Float>
 }
 
 
+//struct Resolution: Codable {
+//    let width: Int
+//    let height: Int
+//}
