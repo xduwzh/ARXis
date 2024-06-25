@@ -29,7 +29,7 @@ class SceneManager: ObservableObject {
     private var library: MTLLibrary {
         device.makeDefaultLibrary()!
     }
-
+    
     @Published var cameras: [CameraInScene] = []
     @Published var lensesPositions: [UInt64?: LensPosition] = [:]
     
@@ -39,7 +39,7 @@ class SceneManager: ObservableObject {
         config.planeDetection = [.vertical, .horizontal]
         return config
     }
-
+    
     
     
     
@@ -47,66 +47,74 @@ class SceneManager: ObservableObject {
         self.arView = arView
         self.arStatus = arStatus
     }
-
+    
     func placeCamera(_ camera: CameraModel, transform: simd_float4x4) {
         //The anchor's translation will be 0 0 0, can't fix
-        let arAnchor = ARAnchor(name: camera.name, transform: transform)
+        let anchorName = camera.name + String(cameras.count)
+        let arAnchor = ARAnchor(name: anchorName, transform: transform)
         arView.session.add(anchor: arAnchor)
-
-        let anchor = AnchorEntity(anchor: arAnchor)
+        
+        //let anchor = AnchorEntity(anchor: arAnchor)
         //let anchor = AnchorEntity(world: transform)
-        let object = camera.getNew()
-
-        let fov = createFOV(height: 0.4, fov: camera.defaultFOV, culling: .none)
-        let coneAnchor = Entity()
-
-        coneAnchor.orientation = simd_quatf(angle: .pi/2, axis: [1, 0, 0])
-
-        coneAnchor.addChild(fov)
-        anchor.addChild(object)
+        //let object = camera.getNew()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            let anchor = self.arView.scene.anchors.first{ $0.name == anchorName }
+            let object = anchor!.children[0]
+            let anchorWorldTransform = object.convert(transform: .identity, to: nil)
+            //print(anchorWorldTransform.translation)
+            //print(arAnchor.transform.translation)
+            let fov = self.createFOV(height: 0.4, fov: camera.defaultFOV, culling: .none)
+            let coneAnchor = Entity()
+            
+            coneAnchor.orientation = simd_quatf(angle: .pi/2, axis: [1, 0, 0])
+            
+            coneAnchor.addChild(fov)
+            //anchor.addChild(object)
+            
+            let lensEntity = object.findEntity(named: camera.lensPart)!
+            
+            lensEntity.addChild(coneAnchor)
+            //        fov.look(at: [0, 0, 1], from: [0, 0, 0], relativeTo: lensEntity)
+            
+            //arView.scene.anchors.append(anchor)
+            self.arView.installGestures(.translation, for: object as! HasCollision)
+            self.cameras.append(CameraInScene(anchor: anchor! as! AnchorEntity, model: camera, fov: fov))
+        }
         
-        let lensEntity = object.findEntity(named: camera.lensPart)!
         
-        lensEntity.addChild(coneAnchor)
-//        fov.look(at: [0, 0, 1], from: [0, 0, 0], relativeTo: lensEntity)
-
-        arView.scene.anchors.append(anchor)
-        arView.installGestures(.translation, for: object)
-        cameras.append(CameraInScene(anchor: anchor, model: camera, fov: fov))
-
         //print(transform.translation)
         //print(anchorWorldTransform.translation)
     }
-
+    
     func createFOV(height: Float, fov: (v: Float, h: Float), culling: CustomMaterial.FaceCulling, materials: [Material]? = nil) -> FOVEntity {
         if let materials = materials {
             return FOVEntity(height: height, fov: fov, materials: materials, sceneManager: self)
         }
-
+        
         let material = SimpleMaterial(color: .random(alpha: 0.6), isMetallic: false)
-
+        
         var custom1 = try! CustomMaterial(
             from: material,
             geometryModifier: .init(named: "emptyGeometryModifier", in: library)
         )
         custom1.faceCulling = culling
         custom1.baseColor = .init(tint: material.color.tint)
-
+        
         return FOVEntity(height: height, fov: fov, materials: [custom1], sceneManager: self)
     }
-
+    
     func setFovHeight(of camera: CameraInScene, to height: Float) {
         let index = cameras.index(of: camera)
         let newHeight = min((1/(-height + 1)) - 1, 100)
         cameras[index].replaceFov(createFOV(height: newHeight, fov: camera.fov.fov, culling: .none, materials: camera.fov.model?.materials))
     }
-
+    
     func setDistanceToFloor(for entity: FOVEntity) {
         guard let camera = getCamera(for: entity.anchor!.id), camera.distanceToFloor != nil else {
             return
         }
     }
-
+    
     func getCamera(at point: CGPoint) -> CameraInScene? {
         let res = arView.hitTest(point)
         if let first = res.first {
@@ -117,36 +125,36 @@ class SceneManager: ObservableObject {
         }
         return nil
     }
-
+    
     func removeCamera(_ camera: CameraInScene) {
         camera.anchor.removeFromParent()
         cameras.removeAll {
             $0.id == camera.id
         }
     }
-
+    
     func getCamera(for id: UInt64) -> CameraInScene? {
         cameras.first(where: { $0.anchor.id == id })
     }
-
+    
     func setSeesIpad(for entity: FOVEntity) {
         guard let camera = getCamera(for: entity.anchor!.id) else {
             return
         }
-
+        
         let ipadEntity = arView.getSelfEntity()
         let relativeIpadPos = ipadEntity.position(relativeTo: entity)
-
+        
         let x = relativeIpadPos.y * tan(entity.fov.v.toRadians / 2)
         let z = relativeIpadPos.y * tan(entity.fov.h.toRadians / 2)
-
+        
         let seesIpad = x > abs(relativeIpadPos.x) && z > abs(relativeIpadPos.z)
         cameras[cameras.index(of: camera)].seesIpad = seesIpad
         
         if !seesIpad {
             return
         }
-
+        
         guard let (camPos, camDir) = self.getCamVector() else {
             return
         }
@@ -164,7 +172,7 @@ class SceneManager: ObservableObject {
             }
         }
     }
-
+    
     func setPixelDensity(for entity: FOVEntity) {
         // We calculate pixel density based on the camera's (currently set) horizontal field of view (angle), the
         // sensor's horizontal pixel count and the distance to the target. Pixel density at the target = sensor's
@@ -172,18 +180,18 @@ class SceneManager: ObservableObject {
         guard let camera = getCamera(for: entity.anchor!.id) else {
             return
         }
-
+        
         let ipadEntity = arView.getSelfEntity()
         let dist = ipadEntity.position(relativeTo: entity).length
         let spec = camera.model.spec
-
+        
         // TODO: fov.v is really fov.h
         cameras[cameras.index(of: camera)].pixelDensity = (Double(spec.resolution.0) / Double(camera.fov.fov.v.toRadians * dist)) / 5.0
     }
-
+    
     func setLensPosition(for fov: FOVEntity) {
         
-//        let projection = arView.project(fov.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
+        //        let projection = arView.project(fov.position(relativeTo: nil)) ?? CGPoint(x: -1, y: -1)
         let relPos = fov.position(relativeTo: arView.getSelfEntity())
         
         let lensPos = LensPosition(
@@ -193,8 +201,8 @@ class SceneManager: ObservableObject {
         
         lensesPositions[fov.id] = lensPos
     }
-
-
+    
+    
     func toggleCone(for camera: CameraInScene) {
         let index = cameras.index(of: camera)
         cameras[index].toggleFOVCone()
@@ -241,7 +249,7 @@ class SceneManager: ObservableObject {
         arStatus.infoLabel = text
         arStatus.saveEnabled = canShowSaveButton
     }
-    
+
     func loadMap() {
         cameras.removeAll()
         arView.scene.anchors.removeAll()
@@ -254,65 +262,82 @@ class SceneManager: ObservableObject {
         let options: ARSession.RunOptions = [.resetTracking, .removeExistingAnchors]
         configuration.initialWorldMap = worldMap
         print("Map loaded")
-        
         arView.session.run(configuration, options: options)
-        // ARWolrdMap contains only the ARAnchor data,
-        // to restore the models, we need to turn it into AnchorEntity
-        // and attach a ModelEntity to it
-        for anchor in arView.session.currentFrame!.anchors {
-            if let name = anchor.name, name.contains("AXIS") {
-//                let modelEntity = createSphere(radius: 0.2)
-//                print("DEBUG: adding model to scene - ")
-//                
-//                // Add modelEntity and anchorEntity into the scene for rendering
-//                let anchorEntity = AnchorEntity(anchor: anchor)
-//                anchorEntity.addChild(modelEntity)
-//                arView.scene.addAnchor(anchorEntity)
-                
-                let camera = CAMERAS.first { $0.name == name }
-                arView.session.add(anchor: anchor)
-
-                let anchor = AnchorEntity(anchor: anchor)
-                //let anchor = AnchorEntity(world: transform)
-                let object = camera!.getNew()
-
-                let fov = createFOV(height: 0.4, fov: camera!.defaultFOV, culling: .none)
+        
+        //print(arView.session.currentFrame!.anchors.isEmpty)
+        // wait the ARSession to load the AnchorEntity
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            print(self.arView.scene.anchors.isEmpty)
+            for anchor in self.arView.scene.anchors{
+                let anchorName = anchor.name
+                let camera = CAMERAS.first { $0.name == anchorName.dropLast() }
+                let anchor = self.arView.scene.anchors.first{ $0.name == anchorName }
+                let object = anchor!.children[0]
+                let fov = self.createFOV(height: 0.4, fov: camera!.defaultFOV, culling: .none)
                 let coneAnchor = Entity()
-
+                
                 coneAnchor.orientation = simd_quatf(angle: .pi/2, axis: [1, 0, 0])
-
+                
                 coneAnchor.addChild(fov)
-                anchor.addChild(object)
+                //anchor.addChild(object)
                 
                 let lensEntity = object.findEntity(named: camera!.lensPart)!
                 
                 lensEntity.addChild(coneAnchor)
-        //        fov.look(at: [0, 0, 1], from: [0, 0, 0], relativeTo: lensEntity)
-
-                arView.scene.anchors.append(anchor)
-                arView.installGestures(.translation, for: object)
-                cameras.append(CameraInScene(anchor: anchor, model: camera!, fov: fov))
+                //        fov.look(at: [0, 0, 1], from: [0, 0, 0], relativeTo: lensEntity)
+                
+                //arView.scene.anchors.append(anchor)
+                self.arView.installGestures(.translation, for: object as! HasCollision)
+                self.cameras.append(CameraInScene(anchor: anchor! as! AnchorEntity, model: camera!, fov: fov))
+                // will crash without waiting
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    let _ = FocusEntity(on: self.arView, focus: .classic)
+                }
             }
+            
         }
+        
+        
 
     }
     
     func saveMap() {
-        arView.session.getCurrentWorldMap { (worldMap, error) in
-            guard let worldMap = worldMap else {
-                self.setUpLabelsAndButtons(text: "Can't get current world map", canShowSaveButton: false)
-                print(error!.localizedDescription)
-                return
-            }
-            do {
-                let data = try NSKeyedArchiver.archivedData(withRootObject: worldMap, requiringSecureCoding: true)
-                try data.write(to: self.worldMapURL, options: [.atomic])
-                print("Map saved")
-            } catch {
-                fatalError("Can't save map: \(error.localizedDescription)")
+        cameras.removeAll()
+        // ARAnchor's transform cannot be changed
+        // so we have to replace it with a new one which
+        // located in the position after user's manipulation
+        for anchor in arView.session.currentFrame!.anchors{
+            if let anchorName = anchor.name, anchorName.contains("AXIS"){
+                let anchorEntity = self.arView.scene.anchors.first{ $0.name == anchorName }
+                let object = anchorEntity!.children[0]
+                let anchorWorldTransform = object.convert(transform: .identity, to: nil)
+                print(anchorWorldTransform.translation)
+                print(anchor.transform.translation)
+                let arAnchor = ARAnchor(name: anchorName, transform: anchorWorldTransform.matrix)
+                arView.session.remove(anchor: anchor)
+                arView.scene.removeAnchor(anchorEntity!)
+                let camera = CAMERAS.first(where: { $0.id == anchorName.dropLast() })
+                placeCamera(camera!, transform: anchorWorldTransform.matrix)
             }
         }
-        print("Map saved!")
+        
+        // wait anchor replacement to be finished
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.arView.session.getCurrentWorldMap { (worldMap, error) in
+                guard let worldMap = worldMap else {
+                    self.setUpLabelsAndButtons(text: "Can't get current world map", canShowSaveButton: false)
+                    print(error!.localizedDescription)
+                    return
+                }
+                do {
+                    let data = try NSKeyedArchiver.archivedData(withRootObject: worldMap, requiringSecureCoding: true)
+                    try data.write(to: self.worldMapURL, options: [.atomic])
+                    print("Map saved")
+                } catch {
+                    fatalError("Can't save map: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 }
 
@@ -322,7 +347,8 @@ extension Array where Element == CameraInScene {
     }
 }
 
-extension ARView {
+
+extension ARView: ARSessionDelegate {
     func getSelfEntity() -> Entity {
         let entity = Entity()
         let p = cameraTransform.matrix.columns.3
@@ -330,42 +356,31 @@ extension ARView {
         entity.transform.rotation = cameraTransform.rotation
         return entity
     }
+    
+    public func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
+        //print("did add anchor: \(anchors.count) anchors in total")
+        
+        // ARWolrdMap contains only the ARAnchor data,
+        // to restore the models, we need to turn it into AnchorEntity
+        // and attach a ModelEntity to it
+        for anchor in anchors {
+            addAnchorEntityToScene(anchor: anchor)
+        }
+    }
+    
+    
+    func addAnchorEntityToScene(anchor: ARAnchor) {
+        if let name = anchor.name, name.contains("AXIS") {
+            let camera = CAMERAS.first { $0.name == name.dropLast() }
+            let anchorEntity = AnchorEntity(anchor: anchor)
+            anchorEntity.name = anchor.name!
+            //print(anchorEntity.name)
+            let object = camera!.getNew()
+            anchorEntity.addChild(object)
+            self.scene.addAnchor(anchorEntity)
+            self.installGestures(for: object)
+        }
+    }
+    
 }
 
-
-//extension ARSessionDelegate{
-//    func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
-//        print("did add anchor: \(anchors.count) anchors in total")
-//        
-//        for anchor in anchors {
-//            addAnchorEntityToScene(anchor: anchor)
-//        }
-//    }
-//    
-//    func addAnchorEntityToScene(anchor: ARAnchor) {
-//        if let name = anchor.name, name.contains("AXIS") {
-//            
-//            let camera = CAMERAS.first { $0.name == name }
-//
-//            let anchor = AnchorEntity(anchor: anchor)
-//            //let anchor = AnchorEntity(world: transform)
-//            let object = camera!.getNew()
-//
-//            let fov = createFOV(height: 0.4, fov: camera!.defaultFOV, culling: .none)
-//            let coneAnchor = Entity()
-//
-//            coneAnchor.orientation = simd_quatf(angle: .pi/2, axis: [1, 0, 0])
-//
-//            coneAnchor.addChild(fov)
-//            anchor.addChild(object)
-//            
-//            let lensEntity = object.findEntity(named: camera!.lensPart)!
-//            
-//            lensEntity.addChild(coneAnchor)
-//    //        fov.look(at: [0, 0, 1], from: [0, 0, 0], relativeTo: lensEntity)
-//
-//            arView.scene.anchors.append(anchor)
-//            arView.installGestures(.translation, for: object)
-//            cameras.append(CameraInScene(anchor: anchor, model: camera!, fov: fov))
-//    }
-//}

@@ -90,14 +90,28 @@ struct MainView: View {
             }
             return !(worldMappingStatus == .mapped)
     }
+    
+    func getMappedhint() -> String{
+        guard let worldMappingStatus = sceneManager.arView.session.currentFrame?.worldMappingStatus else {
+                return "Move around to get environment data"
+            }
+        if worldMappingStatus == .mapped{
+            return "Now you can save the data"
+        } 
+        else{
+            return "Move around to get environment data"
+        }
+            
+    }
     func MenuView() -> some View {
         VStack{
-            Text(arStatus.infoLabel)
+            Text(getMappedhint())
             HStack{
                 Spacer()
                 Button("Load") {
                     sceneManager.loadMap()
                     //sceneManager.loadExperience()
+                    selectedCamera = nil
                 }
                 Spacer()
                 Button("Save") {
@@ -266,6 +280,7 @@ struct ARViewContainer: UIViewRepresentable {
         config.sceneReconstruction = .mesh
         config.planeDetection = [.vertical, .horizontal]
         arView.session.run(config)
+        arView.session.delegate = arView
 
         return arView
     }
