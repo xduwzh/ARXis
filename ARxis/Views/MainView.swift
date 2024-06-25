@@ -92,8 +92,11 @@ struct MainView: View {
     }
     
     func getMappedhint() -> String{
+        if sceneManager.loading {
+            return "Now loading, move around to scan the environment"
+        }
         guard let worldMappingStatus = sceneManager.arView.session.currentFrame?.worldMappingStatus else {
-                return "Move around to get environment data"
+                return "Move around to scan the environment"
             }
         if worldMappingStatus == .mapped{
             return "Now you can save the data"
@@ -117,6 +120,10 @@ struct MainView: View {
                 Button("Save") {
                     sceneManager.saveMap()
                 }.disabled(getMappedStatus())
+                Spacer()
+                Button("Reset") {
+                    sceneManager.resetScene()
+                }
                 Spacer()
             }
             
@@ -185,6 +192,16 @@ struct MainView: View {
             ARView()
             MenuView()
                 .environmentObject(arStatus)
+        }
+        .alert(isPresented: $sceneManager.showAlert) {
+            Alert(
+                title: Text("Place failed"),
+                message: Text("You can only place up to 10 cameras"),
+                dismissButton: .default(Text("OK")) {
+                    // 点击 OK 按钮时执行的操作
+                    sceneManager.showAlert = false
+                }
+            )
         }
     }
 

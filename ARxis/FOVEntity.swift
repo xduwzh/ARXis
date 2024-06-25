@@ -23,7 +23,8 @@ class FOVEntity: Entity, HasModel {
 
     var height: Float = -1
     var fov: FOV_T = (v: -1, h: -1)
-
+    var edges: [Entity] = []
+    
     init(height: Float, fov: FOV_T, materials: [Material], sceneManager: SceneManager) {
         super.init()
         self.name = "fov"
@@ -42,7 +43,7 @@ class FOVEntity: Entity, HasModel {
         let x = height * tan(fov.v.toRadians / 2)
         let z = height * tan(fov.h.toRadians / 2)
 
-        var edges: [Entity] = []
+        edges = []
         let depth = length(SIMD3([x, height, z]))
         for _ in 0..<4 {
             edges.append(createBox(depth: depth))
@@ -71,8 +72,13 @@ class FOVEntity: Entity, HasModel {
 
         children.append(contentsOf: edges)
     }
+    
+    
+    
+
 }
 
+// Pyramid edge line
 private func createBox(depth: Float) -> ModelEntity {
     let box = MeshResource.generateBox(width: 0.005, height: 0.005, depth: depth)
     let material = UnlitMaterial(color: .black)

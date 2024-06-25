@@ -8,7 +8,7 @@
 import ARKit
 import Foundation
 import RealityKit
-
+import SwiftUI
 
 fileprivate extension UIColor {
     static func random(alpha: CGFloat) -> UIColor {
@@ -32,6 +32,9 @@ class SceneManager: ObservableObject {
     
     @Published var cameras: [CameraInScene] = []
     @Published var lensesPositions: [UInt64?: LensPosition] = [:]
+    @Published var showAlert = false
+    @Published var loading = false
+
     
     var defaultConfiguration: ARWorldTrackingConfiguration {
         let config = ARWorldTrackingConfiguration()
@@ -49,44 +52,37 @@ class SceneManager: ObservableObject {
     }
     
     func placeCamera(_ camera: CameraModel, transform: simd_float4x4) {
-        //The anchor's translation will be 0 0 0, can't fix
+        if cameras.count == 10 {
+            //showAlert = true
+            return
+        }
         let anchorName = camera.name + String(cameras.count)
         let arAnchor = ARAnchor(name: anchorName, transform: transform)
         arView.session.add(anchor: arAnchor)
         
-        //let anchor = AnchorEntity(anchor: arAnchor)
-        //let anchor = AnchorEntity(world: transform)
-        //let object = camera.getNew()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             let anchor = self.arView.scene.anchors.first{ $0.name == anchorName }
             let object = anchor!.children[0]
-            let anchorWorldTransform = object.convert(transform: .identity, to: nil)
-            //print(anchorWorldTransform.translation)
-            //print(arAnchor.transform.translation)
             let fov = self.createFOV(height: 0.4, fov: camera.defaultFOV, culling: .none)
+            //self.createProjection(fovEntity: fov)
             let coneAnchor = Entity()
-            
             coneAnchor.orientation = simd_quatf(angle: .pi/2, axis: [1, 0, 0])
-            
             coneAnchor.addChild(fov)
-            //anchor.addChild(object)
             
             let lensEntity = object.findEntity(named: camera.lensPart)!
-            
             lensEntity.addChild(coneAnchor)
-            //        fov.look(at: [0, 0, 1], from: [0, 0, 0], relativeTo: lensEntity)
-            
-            //arView.scene.anchors.append(anchor)
+            //print(transform.translation)
+            //print(fov.convert(transform: .identity, to: nil).translation)
+
             self.arView.installGestures(.translation, for: object as! HasCollision)
             self.cameras.append(CameraInScene(anchor: anchor! as! AnchorEntity, model: camera, fov: fov))
         }
         
         
-        //print(transform.translation)
-        //print(anchorWorldTransform.translation)
+        
     }
     
-    func createFOV(height: Float, fov: (v: Float, h: Float), culling: CustomMaterial.FaceCulling, materials: [Material]? = nil) -> FOVEntity {
+    func createFOV(height: Float, fov: (v: Float, h: Float), culling: CustomMaterial.FaceCulling, materials: [RealityKit.Material]? = nil) -> FOVEntity {
         if let materials = materials {
             return FOVEntity(height: height, fov: fov, materials: materials, sceneManager: self)
         }
@@ -101,6 +97,34 @@ class SceneManager: ObservableObject {
         custom1.baseColor = .init(tint: material.color.tint)
         
         return FOVEntity(height: height, fov: fov, materials: [custom1], sceneManager: self)
+    }
+    
+    func createProjection(fovEntity: FOVEntity) {
+        let pos = fovEntity.convert(transform: .identity, to: nil).translation
+        let x = fovEntity.height * tan(fovEntity.fov.v.toRadians / 2)
+        let z = fovEntity.height * tan(fovEntity.fov.h.toRadians / 2)
+        let c1 = SIMD3([x / 2, fovEntity.height / 2, z / 2]), d1 = SIMD3([x, fovEntity.height, z]).normalised
+        let c2 = SIMD3([x / 2, fovEntity.height / 2, -z / 2]), d2 = SIMD3([x, fovEntity.height, -z]).normalised
+        let c3 = SIMD3([-x / 2, fovEntity.height / 2, z / 2]), d3 = SIMD3([-x, fovEntity.height, z]).normalised
+        let c4 = SIMD3([-x / 2, fovEntity.height / 2, -z / 2]), d4 = SIMD3([-x, fovEntity.height, -z]).normalised
+        let centers = [c1,c2,c3,c4], directions = [d1,d2,d3,d4]
+        for i in 0...3 {
+            let rcQuery = ARRaycastQuery(
+                origin: pos + centers[i], direction: directions[i],
+                allowing: .estimatedPlane, alignment: .any
+            )
+            let result = self.arView.session.raycast(rcQuery)
+            if let hit = result.first {
+                //let camera = CAMERAS.first(where: { $0.id == cameraModelId })
+                let virtualObjectAnchor = ARAnchor(
+                    name:"AXIS_M4216_LV1",
+                    transform: hit.worldTransform
+                )
+                self.arView.session.add(anchor: virtualObjectAnchor)
+                print("Add projection")
+            }
+        }
+        
     }
     
     func setFovHeight(of camera: CameraInScene, to height: Float) {
@@ -238,19 +262,15 @@ class SceneManager: ObservableObject {
         }
     }()
     
-    func resetTrackingConfiguration() {
-        let options: ARSession.RunOptions = [.resetTracking, .removeExistingAnchors]
-        //self.debugOptions = [.showFeaturePoints]
-        arView.session.run(defaultConfiguration, options: options)
-        setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false)
-    }
+
     
     func setUpLabelsAndButtons(text: String, canShowSaveButton: Bool) {
         arStatus.infoLabel = text
         arStatus.saveEnabled = canShowSaveButton
     }
-
+    
     func loadMap() {
+        loading = true
         cameras.removeAll()
         arView.scene.anchors.removeAll()
         guard let mapData = try? Data(contentsOf: self.worldMapURL), let worldMap = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: mapData) else {
@@ -264,43 +284,43 @@ class SceneManager: ObservableObject {
         print("Map loaded")
         arView.session.run(configuration, options: options)
         
-        //print(arView.session.currentFrame!.anchors.isEmpty)
-        // wait the ARSession to load the AnchorEntity
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        loadCones()
+
+    }
+    
+    func loadCones(){
+        if self.arView.scene.anchors.isEmpty {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.loadCones()
+            }
+        } else {
             print(self.arView.scene.anchors.isEmpty)
-            for anchor in self.arView.scene.anchors{
+            for anchor in self.arView.scene.anchors {
                 let anchorName = anchor.name
                 let camera = CAMERAS.first { $0.name == anchorName.dropLast() }
-                let anchor = self.arView.scene.anchors.first{ $0.name == anchorName }
+                let anchor = self.arView.scene.anchors.first { $0.name == anchorName }
                 let object = anchor!.children[0]
                 let fov = self.createFOV(height: 0.4, fov: camera!.defaultFOV, culling: .none)
                 let coneAnchor = Entity()
                 
                 coneAnchor.orientation = simd_quatf(angle: .pi/2, axis: [1, 0, 0])
-                
                 coneAnchor.addChild(fov)
-                //anchor.addChild(object)
                 
                 let lensEntity = object.findEntity(named: camera!.lensPart)!
-                
                 lensEntity.addChild(coneAnchor)
-                //        fov.look(at: [0, 0, 1], from: [0, 0, 0], relativeTo: lensEntity)
                 
-                //arView.scene.anchors.append(anchor)
                 self.arView.installGestures(.translation, for: object as! HasCollision)
                 self.cameras.append(CameraInScene(anchor: anchor! as! AnchorEntity, model: camera!, fov: fov))
-                // will crash without waiting
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    let _ = FocusEntity(on: self.arView, focus: .classic)
-                }
+                self.loading = false
             }
             
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let _ = FocusEntity(on: self.arView, focus: .classic)
+                
+            }
         }
-        
-        
-
     }
-    
+  
     func saveMap() {
         cameras.removeAll()
         // ARAnchor's transform cannot be changed
@@ -313,11 +333,12 @@ class SceneManager: ObservableObject {
                 let anchorWorldTransform = object.convert(transform: .identity, to: nil)
                 print(anchorWorldTransform.translation)
                 print(anchor.transform.translation)
-                let arAnchor = ARAnchor(name: anchorName, transform: anchorWorldTransform.matrix)
+                //let arAnchor = ARAnchor(name: anchorName, transform: anchorWorldTransform.matrix)
                 arView.session.remove(anchor: anchor)
                 arView.scene.removeAnchor(anchorEntity!)
                 let camera = CAMERAS.first(where: { $0.id == anchorName.dropLast() })
                 placeCamera(camera!, transform: anchorWorldTransform.matrix)
+                
             }
         }
         
@@ -338,6 +359,23 @@ class SceneManager: ObservableObject {
                 }
             }
         }
+    }
+    
+    func resetScene(){
+        cameras.removeAll()
+        if let _ = arView.session.currentFrame{
+            if !arView.session.currentFrame!.anchors.isEmpty{
+                for anchor in arView.session.currentFrame!.anchors{
+                    arView.session.remove(anchor: anchor)
+                }
+            }
+        }
+        arView.scene.anchors.removeAll()
+        let options: ARSession.RunOptions = [.resetTracking, .removeExistingAnchors]
+        //self.debugOptions = [.showFeaturePoints]
+        arView.session.run(defaultConfiguration, options: options)
+        setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false)
+        let _ = FocusEntity(on: self.arView, focus: .classic)
     }
 }
 
